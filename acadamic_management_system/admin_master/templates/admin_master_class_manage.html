@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+{% block content %}
+<!-- START BREADCRUMB -->
+<ul class="breadcrumb">
+    <li><a href="#">Master</a></li>                    
+    <li class="active">Manage Class</li>
+</ul>
+<!-- END BREADCRUMB -->  
+<div class="content-frame-top">                        
+    <div class="page-title">                    
+        <h2><span class="fa fa-arrow-circle-o-left"></span> Manage Class</h2>
+    </div>                                      
+    
+
+    
+</div>
+
+
+
+
+<form method="post" action="{% url 'admin_class_manage' %}">
+    {% csrf_token %}
+<div class="panel panel-default">
+    <div class="panel-heading ui-draggable-handle">
+        <h1 class="panel-title"><strong></strong><b>New Class</b></h1>
+        <ul class="panel-controls">
+            <li><a href="#" class="panel-remove"><span class="fa fa-times"></span></a></li>
+        </ul>
+    </div>
+    <div class="panel-body">
+
+        <div class="block">                            
+                                              
+            <div class="col-md-12">
+                <div>
+                    <input type="text" name="class_name" placeholder="Class Name" class="form-control">
+                </div>
+                      
+            </div>                                
+            
+                                                                                      
+        </div>
+    </div>
+    
+    <div class="panel-footer">
+        <input type="reset" class="btn btn-default" value="Clear">                                 
+        <button class="btn btn-primary pull-right">Submit</button>
+    </div>
+</div>
+</form>
+<div class="panel panel-default">
+    <div class="panel-heading ui-draggable-handle">                                
+        <h1 class="panel-title"><b>View Class</b></h1>
+        <ul class="panel-controls">
+            <li><a href="#" class="panel-collapse"><span class="fa fa-angle-down"></span></a></li>
+            <li><a href="#" class="panel-refresh"><span class="fa fa-refresh"></span></a></li>
+            <li><a href="#" class="panel-remove"><span class="fa fa-times"></span></a></li>
+        </ul>                                
+    </div>
+    <div class="panel-body">
+        <table class="table datatable dataTable no-footer" id="DataTables_Table_0" role="grid" aria-describedby="DataTables_Table_0_info">
+            <thead>
+                <tr role="row"><th class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Name: activate to sort column ascending" style="width: 198px;">#</th><th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Position: activate to sort column ascending" style="width: 309px;">Class Name</th><th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Age: activate to sort column ascending" style="width: 70px;">Status</th><th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Start date: activate to sort column ascending" style="width: 137px;">Action</th></tr>
+            </thead>
+            <tbody>
+            {% for ams_class in ams_classes %}
+                <tr >
+                    <td class="sorting_1">{{ forloop.counter }}</td>
+                    <td>{{ ams_class.class_name }}</td>
+                    <td>
+                        {% if ams_class.status %}
+                            <span class="label label-success">Active</span>
+                        {% else %}
+                            <span class="label label-danger">Deactive</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <button class="btn btn-primary btn-rounded" data-toggle="modal" data-target="#modal_basic">
+                            <span class="fa fa-pencil"></span>
+                        </button>
+                        <button class="btn btn-primary btn-rounded" onClick="delete_row('trow_{{ forloop.counter }}');">
+                            <span class="fa fa-trash-o"></span>
+                        </button>
+                    </td>
+                </tr>
+            {% endfor %}
+
+            <tr role="row" class="odd">
+                    <td class="sorting_1">1</td>
+                    <td>Class</td>
+                    <td><span class="label label-danger">Deactive</span></td>
+                    <td><button class="btn btn-primary btn-rounded" data-toggle="modal" data-target="#modal_basic"><span class="fa fa-pencil"></span></button><button class="btn btn-primary btn-rounded" onClick="delete_row('trow_1');"><span class="fa fa-trash-o"></span></button></td>
+                </tbody>
+        </table>
+    </div>
+
+    <div class="modal" id="modal_basic" tabindex="-1" role="dialog" aria-labelledby="defModalHead" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true"></span>×<span class="sr-only">Close</span></button>
+                    <h4 class="modal-title" id="defModalHead">Edit Class</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                    <div class="col-md-6">
+                        <input type="text" placeholder="Class Name" class="form-control">
+                    </div>
+                    <div class="col-md-6">
+                        <select class="form-control" data-live-search="true">
+                            <option>Active</option>
+                            <option>Deactive</option>
+                            
+                        </select>
+                    </div><br></br>
+                    
+
+                </div>
+            </div>
+           
+
+                    <div class="panel-footer">
+                        <button class="btn btn-default" data-dismiss="modal">Close</button>                                    
+                        <button class="btn btn-primary pull-right">Update</button>
+                    </div>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+<!-- MESSAGE BOX-->
+<div class="message-box animated fadeIn" data-sound="alert" id="mb-remove-row">
+    <div class="mb-container">
+        <div class="mb-middle">
+            <div class="mb-title"><span class="fa fa-times"></span> Remove <strong>Data</strong> ?</div>
+            <div class="mb-content">
+                <p>Are you sure you want to remove this row?</p>                    
+                <p>Press Yes if you sure.</p>
+            </div>
+            <div class="mb-footer">
+                <div class="pull-right">
+                    <button class="btn btn-success btn-lg mb-control-yes">Yes</button>
+                    <button class="btn btn-default btn-lg mb-control-close">No</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END MESSAGE BOX-->    
+   
+{% endblock content %}

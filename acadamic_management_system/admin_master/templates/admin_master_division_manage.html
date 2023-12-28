@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+{% block content %}
+<!-- START BREADCRUMB -->
+<ul class="breadcrumb">
+    <li><a href="#">Master</a></li>                    
+    <li class="active">Manage Division</li>
+</ul>
+<!-- END BREADCRUMB -->  
+<div class="content-frame-top">                        
+    <div class="page-title">                    
+        <h2><span class="fa fa-arrow-circle-o-left"></span> Manage Division</h2>
+    </div>                                      
+    
+
+    
+</div>
+
+
+
+
+<form>
+<div class="panel panel-default">
+    <div class="panel-heading ui-draggable-handle">
+        <h1 class="panel-title"><strong></strong><b>New Division</b></h1>
+        <ul class="panel-controls">
+            <li><a href="#" class="panel-remove"><span class="fa fa-times"></span></a></li>
+        </ul>
+    </div>
+    <div class="panel-body">
+
+        <div class="block">                            
+                                              
+            <div class="col-md-12">
+                <div>
+                    <input type="text" placeholder="Division Name" class="form-control">
+                </div>
+                      
+            </div>                                
+            
+                                                                                      
+        </div>
+    </div>
+    
+    <div class="panel-footer">
+        <input type="reset" class="btn btn-default" value="Clear">                                    
+        <button class="btn btn-primary pull-right">Submit</button>
+    </div>
+</div>
+</form>
+
+<div class="panel panel-default">
+    <div class="panel-heading ui-draggable-handle">                                
+        <h1 class="panel-title"><b>View Division</b></h1>    
+        <ul class="panel-controls">
+            <li><a href="#" class="panel-collapse"><span class="fa fa-angle-down"></span></a></li>
+            <li><a href="#" class="panel-refresh"><span class="fa fa-refresh"></span></a></li>
+            <li><a href="#" class="panel-remove"><span class="fa fa-times"></span></a></li>
+        </ul>                                
+    </div>
+    <div class="panel-body">
+        {% comment %} <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper no-footer"><div class="dataTables_length" id="DataTables_Table_0_length"><label>Show <select name="DataTables_Table_0_length" aria-controls="DataTables_Table_0" class="form-control"><option value="10">10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option></select> entries</label></div><div id="DataTables_Table_0_filter" class="dataTables_filter"><label>Search:<input type="search" class="form-control " placeholder="" aria-controls="DataTables_Table_0"></label></div> {% endcomment %}
+        <table class="table datatable dataTable no-footer" id="DataTables_Table_0" role="grid" aria-describedby="DataTables_Table_0_info">
+            <thead>
+                <tr role="row"><th class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Name: activate to sort column ascending" style="width: 198px;">#</th><th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Position: activate to sort column ascending" style="width: 309px;">Division Name</th><th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Age: activate to sort column ascending" style="width: 70px;">Status</th><th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Start date: activate to sort column ascending" style="width: 137px;">Action</th></tr>
+            </thead>
+            <tbody>
+            <tr role="row" class="odd">
+                    <td class="sorting_1">1</td>
+                    <td>Division</td>
+                    <td><span class="label label-danger">Deactive</span></td>
+                    <td><button class="btn btn-primary btn-rounded" data-toggle="modal" data-target="#modal_basic"><span class="fa fa-pencil"></span></button><button class="btn btn-primary btn-rounded" onClick="delete_row('trow_1');"><span class="fa fa-trash-o"></span></button></td>
+                    
+                    
+                </tr><tr role="row" class="even">
+                    <td class="sorting_1">2</td>
+                    <td>Division</td>
+                    <td><span class="label label-success label-form">Active</span></td>
+                    <td><button class="btn btn-primary btn-rounded" data-toggle="modal" data-target="#modal_basic"><span class="fa fa-pencil"></span></button></td>
+                    
+                    
+                
+                </tbody>
+        </table>
+        {% comment %} <div class="dataTables_info" id="DataTables_Table_0_info" role="status" aria-live="polite">Showing 1 to 2 of 2 entries</div><div class="dataTables_paginate paging_simple_numbers" id="DataTables_Table_0_paginate"><a class="paginate_button previous disabled" aria-controls="DataTables_Table_0" data-dt-idx="0" tabindex="0" id="DataTables_Table_0_previous">Previous</a><span><a class="paginate_button current" aria-controls="DataTables_Table_0" data-dt-idx="1" tabindex="0">1</a></span><a class="paginate_button next" aria-controls="DataTables_Table_0" data-dt-idx="7" tabindex="0" id="DataTables_Table_0_next">Next</a></div></div> {% endcomment %}
+    </div>
+
+    <div class="modal" id="modal_basic" tabindex="-1" role="dialog" aria-labelledby="defModalHead" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true"></span>×<span class="sr-only">Close</span></button>
+                    <h4 class="modal-title" id="defModalHead">Edit Division</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                    <div class="col-md-6">
+                        <input type="text" placeholder="Division Name" class="form-control">
+                    </div>
+                    <div class="col-md-6">
+                        <select class="form-control" data-live-search="true">
+                            <option>Active</option>
+                            <option>Deactive</option>
+                            
+                        </select>
+                    </div><br></br>
+                    
+
+                </div>
+            </div>
+                
+
+                    <div class="panel-footer">
+                        <button class="btn btn-default" data-dismiss="modal">Close</button>                                    
+                        <button class="btn btn-primary pull-right">Update</button>
+                    </div>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+<!-- MESSAGE BOX-->
+<div class="message-box animated fadeIn" data-sound="alert" id="mb-remove-row">
+    <div class="mb-container">
+        <div class="mb-middle">
+            <div class="mb-title"><span class="fa fa-times"></span> Remove <strong>Data</strong> ?</div>
+            <div class="mb-content">
+                <p>Are you sure you want to remove this row?</p>                    
+                <p>Press Yes if you sure.</p>
+            </div>
+            <div class="mb-footer">
+                <div class="pull-right">
+                    <button class="btn btn-success btn-lg mb-control-yes">Yes</button>
+                    <button class="btn btn-default btn-lg mb-control-close">No</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END MESSAGE BOX-->    
+   
+{% endblock content %}

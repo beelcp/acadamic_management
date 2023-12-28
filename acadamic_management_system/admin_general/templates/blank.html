@@ -1,0 +1,252 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+
+        <!-- START FIRST DEFAULT DATATABLE -->
+        <div class="panel panel-default">
+            <div class="panel-heading">                                
+                <h2 class="fa fa-arrow-circle-o-left">Manage Department</h2>
+                <ul class="panel-controls">
+                    <li><a href="#" class="panel-collapse"><span class="fa fa-angle-down"></span></a></li>
+                    <li><a href="#" class="panel-refresh"><span class="fa fa-refresh"></span></a></li>
+                    <li><a href="#" class="panel-remove"><span class="fa fa-times"></span></a></li>
+                </ul>                                
+            </div>
+            <div class="panel-body">
+                <!-- Filter inputs for the first table - First Row -->
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="name-filter1"> Department Name:</label>
+                            <input type="text" class="form-control" id="name-filter1" placeholder="Filter by Name">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="position-filter1">Department Code:</label>
+                            <input type="text" class="form-control" id="position-filter1" placeholder="Filter by Position">
+                        </div>
+                    </div>
+                </div>
+    
+                <!-- Table for the first set of data -->
+                <div class="table-container">
+                    <table class="table datatable">
+                        <!-- Table content for the first set of data -->
+                    </table>
+                </div>
+    
+                <!-- Buttons for the first datatable - Second Row -->
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <button type="button" class="x-navigation-control btn btn-custom-style">ClearForm</button>
+                            <button type="button" class="btn btn-primary pull-right" style=" background-color: black; color: white;">Save</button>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+        <!-- END FIRST DEFAULT DATATABLE -->
+    
+    </div>
+    
+
+    <div class="col-md-12">
+
+        <!-- START SECOND DEFAULT DATATABLE -->
+        <div class="panel panel-default">
+            <div class="panel-heading">                                
+                <h3 class="panel-title">Default Table 2</h3>
+                <ul class="panel-controls">
+                    <li><a href="#" class="panel-collapse"><span class="fa fa-angle-down"></span></a></li>
+                    <li><a href="#" class="panel-refresh"><span class="fa fa-refresh"></span></a></li>
+                    <li><a href="#" class="panel-remove"><span class="fa fa-times"></span></a></li>
+                </ul>                                
+            </div>
+            
+
+                <!-- Table for the second set of data -->
+                <div class="table-container">
+                        <table class="table datatable">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Department Name</th>
+                                    <th>Code</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>System Architect</td>
+                                    <td>001</td>
+                                    <td class="project-state">
+                                          <span class="badge badge-success">Active</span>
+                
+                
+                                      </td>
+                                      <td>
+                                      
+                                        <button  class="btn btn-primary btn-rounded"   data-toggle="modal" data-target="#modal_basic">
+                                            <span class="fa fa-pencil xn-text"></span>
+                                        </button>
+                                            <span style="margin-left: 5px;"></span>
+                                            <button  class="btn btn-primary btn-rounded"   data-toggle="modal" data-target="#modal_basic">
+                                                <span class="fa fa-trash-o xn-text"></span>
+                                            </button>
+
+                                            </td>
+                                      
+                                    
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>System Architect</td>
+                                    <td>002</td>
+                                    <td class="project-state">
+                                          <span class="badge badge-danger">Deactive</span>
+                
+                
+                                      </td>
+                                      <td>
+                                      
+                                        <button  class="btn btn-primary btn-rounded"   data-toggle="modal" data-target="#modal_basic">
+                                            <span class="fa fa-pencil xn-text"></span>
+                                        </button>
+                                            <span style="margin-left: 5px;"></span>
+                                            <button  class="btn btn-primary btn-rounded"   data-toggle="modal" data-target="#modal_basic">
+                                                <span class="fa fa-trash-o xn-text"></span>
+                                            </button>
+
+                                            </td>
+                                    
+                                </tr>
+                                <!-- Add more rows as needed -->
+                            </tbody>
+                        <!-- Table content for the second set of data -->
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- END SECOND DEFAULT DATATABLE -->
+
+    </div>
+</div>
+
+<!-- MESSAGE BOX-->
+<div class="message-box animated fadeIn" data-sound="alert" id="mb-remove-row">
+    <div class="mb-container">
+        <div class="mb-middle">
+            <div class="mb-title"><span class="fa fa-times"></span> Remove <strong>Data</strong> ?</div>
+            <div class="mb-content">
+                <p>Are you sure you want to remove this row?</p>                    
+                <p>Press Yes if you sure.</p>
+            </div>
+            <div class="mb-footer">
+                <div class="pull-right">
+                    <button class="btn btn-success btn-lg mb-control-yes">Yes</button>
+                    <button class="btn btn-default btn-lg mb-control-close">No</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END MESSAGE BOX-->   
+    <!-- MESSAGE BOX-->
+    <div class="message-box animated fadeIn" data-sound="alert" id="mb-signout">
+        <div class="mb-container">
+            <div class="mb-middle">
+                <div class="mb-title"><span class="fa fa-sign-out"></span> Log <strong>Out</strong> ?</div>
+                <div class="mb-content">
+                    <p>Are you sure you want to log out?</p>                    
+                    <p>Press No if youwant to continue work. Press Yes to logout current user.</p>
+                </div>
+                <div class="mb-footer">
+                    <div class="pull-right">
+                        <a href="pages-login.html" class="btn btn-success btn-lg">Yes</a>
+                        <button class="btn btn-default btn-lg mb-control-close">No</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END MESSAGE BOX-->
+    
+
+
+<!-- EDIT MESSAGE BOX -->
+<div class="message-box animated fadeIn" data-sound="alert" id="mb-edit-row">
+    <div class="mb-container">
+        <div class="mb-middle">
+            <div class="mb-title"><span class="fa fa-pencil"></span> Edit <strong>Data</strong> ?</div>
+            <div class="mb-content">
+                <p>Are you sure you want to edit this row?</p>
+                <p>Press Yes if you're sure.</p>
+            </div>
+            <div class="mb-footer">
+                <div class="pull-right">
+                    <button class="btn btn-primary btn-lg mb-control-yes" onclick="editAction()">Yes</button>
+                    <button class="btn btn-default btn-lg mb-control-close">No</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END EDIT MESSAGE BOX -->
+<div class="modal" id="modal_basic" tabindex="-1" role="dialog" aria-labelledby="defModalHead" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="defModalHead">Basic Modal</h4>
+            </div>
+            <div class="modal-body">
+                <!-- Add two textboxes in the same row -->
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <input type="text" placeholder="Department Name" class="form-control" id="textbox1">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <input type="text" placeholder="Department Code" class="form-control" id="textbox2">
+                        </div>
+                    </div>
+                </div>
+              
+                
+                <div class="panel-panel-default">
+                    <div class="panel-body">                                                                                            
+                        <select class="form-control select">
+                            <option>Active</option>
+                            <option>Deactive</option>
+                            
+                        </select>
+                    </div>
+                </div>
+                
+            </div>
+            
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary pull-left" data-dismiss="modal">Close
+                    <span class="glyphicon glyphicon-remove"></span>
+                </button>
+                <button type="button" class="btn btn-primary ">Update
+                    <span class="glyphicon glyphicon-upload"></span>
+                </button>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
