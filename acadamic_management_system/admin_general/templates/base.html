@@ -278,5 +278,11 @@
     <!-- END PAGE PLUGINS -->
 
     <!-- START TEMPLATE -->
-    
+    {% if messages %}
+  <script>
+    {% for message in messages %}
+      alert("{{ message }}");
+    {% endfor %}
+  </script>
+{% endif %}
 </html>
