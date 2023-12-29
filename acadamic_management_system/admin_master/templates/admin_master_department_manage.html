@@ -81,7 +81,7 @@
                         {% endif %}
                     </td>
                     <td>
-                        <button class="btn btn-primary btn-rounded" data-toggle="modal" data-target="#modal_basic">
+                        <button class="btn btn-primary btn-rounded" onClick="edit_row({{ ams_department.id }});" data-toggle="modal" data-target="#modal_basic">
                             <span class="fa fa-pencil"></span>
                         </button>
                         <button class="btn btn-primary btn-rounded" onClick="delete_row('trow_{{ forloop.counter }}');">
@@ -104,10 +104,10 @@
                 <div class="modal-body">
                     <div class="row">
                     <div class="col-md-6">
-                        <input type="text" placeholder="Department Name" class="form-control">
+                        <input type="text" placeholder="Department Name" class="form-control" id="department_name">
                     </div>
                     <div class="col-md-6">
-                        <input type="text" placeholder="Department Code" class="form-control">
+                        <input type="text" placeholder="Department Code" class="form-control" id="department_code">
                     </div><br></br>
                     <div class="col-md-12">                                                                                
                         <select class="form-control " data-live-search="true">
