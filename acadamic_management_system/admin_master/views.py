@@ -23,7 +23,7 @@ def admin_department_manage(request):
         elif AmsDepartment.objects.filter(department_name=department_name).exists():
             messages.error(request, 'Department with this name already exists.')
         else:
-            AmsDepartment.objects.create(department_name=department_name, department_code=department_code)
+            AmsDepartment.objects.create(department_name=department_name, department_code=department_code,)
             messages.success(request, 'Department created successfully.')
 
     return render(request, 'admin_master_department_manage.html', {'ams_departments': ams_departments})
@@ -164,9 +164,9 @@ def ajax_department_view(request):
         serialized_data= {
             'department_name': response_data.department_name,
             'department_code': response_data.department_code,
+            'status':1 if response_data.status else 0,
 
         }
         return JsonResponse(serialized_data)
-
 
 

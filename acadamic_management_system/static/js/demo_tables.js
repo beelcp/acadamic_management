@@ -38,10 +38,12 @@
    
 
     function edit_row(id) {
-        
+        document.getElementById('spinner'+id).className="fa fa-spinner";
+
         $.ajax({
             type: "GET",
-            url: "http://127.0.0.1:8000/ajax_department_view/",
+            url: document.getElementById("url_name").value,
+            
             data : {
                 'id': id
             },
@@ -54,9 +56,14 @@
                 //       "\nStatus: " + (data.status ? 'Active' : 'Inactive'));
                 document.getElementById("department_name").value=data.department_name;
                 document.getElementById("department_code").value=data.department_code;
+                document.getElementById("status").value=data.status;
+                console.log(data.status);
                 $("modal_basic").show();
+                document.getElementById('spinner'+id).className="fa fa-pencil";
+
 
             },
+
             error: function (error) {
                 // Handle errors
                 console.log(error);

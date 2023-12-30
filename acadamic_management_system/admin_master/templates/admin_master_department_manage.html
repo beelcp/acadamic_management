@@ -82,8 +82,9 @@
                     </td>
                     <td>
                         <button class="btn btn-primary btn-rounded" onClick="edit_row({{ ams_department.id }});" data-toggle="modal" data-target="#modal_basic">
-                            <span class="fa fa-pencil"></span>
+                            <span id="spinner{{ams_department.id}}" class="fa fa-pencil"></span>
                         </button>
+                           
                         <button class="btn btn-primary btn-rounded" onClick="delete_row('trow_{{ forloop.counter }}');">
                             <span class="fa fa-trash-o"></span>
                         </button>
@@ -110,16 +111,18 @@
                         <input type="text" placeholder="Department Code" class="form-control" id="department_code">
                     </div><br></br>
                     <div class="col-md-12">                                                                                
-                        <select class="form-control " data-live-search="true">
-                            <option>Active</option>
-                            <option>Deactive</option>
+                        <select class="form-control " data-live-search="true" id="status">
+                            <option value="1">Active</option>
+                            <option value="0">Deactive</option>
                             
                         </select>
                     </div>
 
                 </div>
             </div>
-                
+            
+
+
 
                     <div class="panel-footer">
                         <button class="btn btn-default" data-dismiss="modal">Close</button>                                    
@@ -131,6 +134,7 @@
         </div>
     </div>
 </div>
+<input type="hidden" value="{% url 'ajax_department_view' %}" id="url_name">
 <!-- MESSAGE BOX-->
 <div class="message-box animated fadeIn" data-sound="alert" id="mb-remove-row">
     <div class="mb-container">
