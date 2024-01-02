@@ -1,6 +1,6 @@
 from . import views
 from django.urls import path
-from .views import ajax_view,ajax_department_view
+from .views import ajax_view
 
 
 urlpatterns = [
@@ -13,6 +13,8 @@ urlpatterns = [
     path('ad_employee_category',views.admin_employee_category,name="admin_employee_category"),
     path('ajaxsend/',ajax_view, name='ajaxsend'),
     path('ajax_department_view/', views.ajax_department_view, name='ajax_department_view'),
+    path('ajax_department_update/', views.ajax_department_update, name='ajax_department_update'),
+    path('ajax_delete_row1/', views.ajax_delete_row1, name='ajax_delete_row1'),
 
     
 ]

@@ -39,6 +39,7 @@
 
     function edit_row(id) {
         document.getElementById('spinner'+id).className="fa fa-spinner";
+        document.getElementById("department_id").value=id;
 
         $.ajax({
             type: "GET",
@@ -68,6 +69,75 @@
                 // Handle errors
                 console.log(error);
             }
+        });
+    }
+    
+   
+    
+    
+    function update_row() {
+        var id = document.getElementById("department_id").value;
+        var department_name = document.getElementById("department_name").value;
+        var department_code = document.getElementById("department_code").value;
+        var status = document.getElementById("status").value;
+    
+        $.ajax({
+            type: "GET",
+            url: document.getElementById("url_update").value,
+            data: {
+                'id': id,
+                'department_name': department_name,
+                'department_code': department_code,
+                'status': status
+            },
+            dataType: "json",
+            success: function (data) {
+                if (data.success != '') {
+                    alert(data.success);
+                    $("#modal_basic").modal("hide");
+                    window.location.reload(true);
+                } else {
+                    alert(data.error);
+                }
+            },
+            error: function (error) {
+                console.error('error occurred:', error);
+            }
+        });
+    }
+    
+    function delete_row1(id) {
+        var box = $("#mb-remove-row");
+        box.addClass("open");
+    
+        box.find(".mb-control-yes").on("click", function () {
+            box.removeClass("open");
+    
+            // Assuming you're using AJAX to send a POST request to the Django view
+            $.ajax({
+                type: "GET",
+                url: document.getElementById("url_delete").value,
+                data: {
+                    'id': id,
+                    
+                },
+                dataType: "json",
+                success: function (data) {
+                    if (data.success) {
+                        $("#" + id).hide("slow", function () {
+                            $(this).remove();
+                        });
+                        // Handle success (e.g., refresh the page or update the UI)
+                    
+                    } else {
+                        // Handle error (e.g., display an error message)
+                        alert(data.error);
+                    }
+                },
+                error: function (error) {
+                    console.error('Error occurred:', error);
+                }
+            });
         });
     }
     

@@ -69,7 +69,7 @@
                 <tr role="row"><th class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Name: activate to sort column ascending" style="width: 198px;">#</th><th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Position: activate to sort column ascending" style="width: 309px;">Department Name</th><th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Office: activate to sort column ascending" style="width: 148px;">Code</th><th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Age: activate to sort column ascending" style="width: 70px;">Status</th><th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Start date: activate to sort column ascending" style="width: 137px;">Action</th></tr>
             </thead>
             <tbody>
-                {% for ams_department in ams_departments %}                <tr >
+                {% for ams_department in ams_departments %}                <tr id="{{ams_department.id}}" >
                     <td>{{ forloop.counter }}</td>
                     <td>{{ ams_department.department_name }}</td>
                     <td>{{ ams_department.department_code }}</td>
@@ -84,10 +84,10 @@
                         <button class="btn btn-primary btn-rounded" onClick="edit_row({{ ams_department.id }});" data-toggle="modal" data-target="#modal_basic">
                             <span id="spinner{{ams_department.id}}" class="fa fa-pencil"></span>
                         </button>
-                           
-                        <button class="btn btn-primary btn-rounded" onClick="delete_row('trow_{{ forloop.counter }}');">
+                        {% if not ams_department.status%}
+                        <button class="btn btn-primary btn-rounded" onClick="delete_row1({{ ams_department.id }});">
                             <span class="fa fa-trash-o"></span>
-                        </button>
+                        </button>    {% endif %}
                     </td>
                 </tr>
             {% endfor %}
@@ -105,6 +105,7 @@
                 <div class="modal-body">
                     <div class="row">
                     <div class="col-md-6">
+
                         <input type="text" placeholder="Department Name" class="form-control" id="department_name">
                     </div>
                     <div class="col-md-6">
@@ -126,7 +127,9 @@
 
                     <div class="panel-footer">
                         <button class="btn btn-default" data-dismiss="modal">Close</button>                                    
-                        <button class="btn btn-primary pull-right">Update</button>
+                        <button class="btn btn-primary pull-right" onclick="update_row()" >Update</button>
+                        <input type="hidden" class="form-control" id="department_id">
+
                     </div>
                     
                 
@@ -134,7 +137,11 @@
         </div>
     </div>
 </div>
-<input type="hidden" value="{% url 'ajax_department_view' %}" id="url_name">
+<input type="hidden" value="{{request.scheme}}://{{request.get_host}}/ajax_department_view" id="url_name">
+<input type="hidden" value="{{request.scheme}}://{{request.get_host}}/ajax_department_update" id="url_update">
+<input type="hidden" value="{{request.scheme}}://{{request.get_host}}/ajax_delete_row1" id="url_delete">
+
+
 <!-- MESSAGE BOX-->
 <div class="message-box animated fadeIn" data-sound="alert" id="mb-remove-row">
     <div class="mb-container">
@@ -156,3 +163,8 @@
 <!-- END MESSAGE BOX-->    
    
 {% endblock content %}
+
+<div class="form-group">
+    <button type="button" class="btn btn-info mb-control" data-box="#message-box-sound-1">Alert</button>
+    <button type="button" class="btn btn-danger mb-control" data-box="#message-box-sound-2">Fail</button>
+</div>

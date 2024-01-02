@@ -4,10 +4,13 @@ from django.contrib import messages
 from django.http import JsonResponse
 
 
+
 # Create your views here.
 
 def base(request):
     return render(request,'base.html')
+
+
 
 
 
@@ -22,8 +25,15 @@ def admin_department_manage(request):
             messages.error(request, 'Department name cannot be blank.')
         elif AmsDepartment.objects.filter(department_name=department_name).exists():
             messages.error(request, 'Department with this name already exists.')
+        elif not department_code:
+            messages.error(request, 'Department code cannot be blank.')
+        elif AmsDepartment.objects.filter(department_code=department_code).exists():
+            messages.error(request, 'Department with this code already exists.')
         else:
-            AmsDepartment.objects.create(department_name=department_name, department_code=department_code,)
+            AmsDepartment.objects.create(
+                department_name=department_name,
+                department_code=department_code
+            )
             messages.success(request, 'Department created successfully.')
 
     return render(request, 'admin_master_department_manage.html', {'ams_departments': ams_departments})
@@ -158,6 +168,7 @@ def ajax_view(request):
 #     else:
 #         # Handle non-AJAX requests, if needed
 #         return render(request, 'your_template.html')
+    
 def ajax_department_view(request):
         department_id = request.GET['id']
         response_data = AmsDepartment.objects.get(id=department_id)
@@ -170,3 +181,120 @@ def ajax_department_view(request):
         return JsonResponse(serialized_data)
 
 
+
+
+# def ajax_department_update(request,department_id):
+
+
+
+#     if request.method == 'POST':
+#         department_name = request.GET['department_name'], 
+#         department_code = request.GET['department_code'], 
+#         status=request.GET['status']
+
+#         try:
+#             amsDepartment=AmsDepartment.objects.get(id=department_id)
+#             if not department_name:
+#                 messages.error(request, 'Department name cannot be blank.')
+#             elif AmsDepartment.objects.exclude(id=department_id).filter(department_name=department_name).exists():
+#                 messages.error(request, 'Department with this name already exists.')
+#             elif not department_code:
+#                 messages.error(request, 'Department code cannot be blank.')
+#             elif AmsDepartment.objects.exclude(id=department_id).filter(department_code=department_code).exists():
+#                 messages.error(request, 'Department with this code already exists.')
+#             else:
+#             # Update department
+#                 amsDepartment.department_name = department_name
+#                 amsDepartment.department_code = department_code
+#                 amsDepartment.status=status
+
+#                 amsDepartment.save()
+#                 messages.success(request, 'Department updated successfully.')
+#         except AmsDepartment.DoesNotExist:
+#                 messages.error(request, 'invalid.')
+
+# from django.http import JsonResponse
+# from django.shortcuts import get_object_or_404
+# from django.contrib import messages
+# from .models import AmsDepartment
+
+# def ajax_department_update(request, department_id):
+#     if request.method == 'POST':
+#         department_name = request.POST.get('department_name', '').strip()
+#         department_code = request.POST.get('department_code', '').strip()
+#         status = request.POST.get('status')
+
+#         amsDepartment = get_object_or_404(AmsDepartment, id=department_id)
+
+#         if not department_name:
+#             return JsonResponse({'error': 'Department name cannot be blank.'})
+#         elif AmsDepartment.objects.exclude(id=department_id).filter(department_name=department_name).exists():
+#             return JsonResponse({'error': 'Department with this name already exists.'})
+#         elif not department_code:
+#             return JsonResponse({'error': 'Department code cannot be blank.'})
+#         elif AmsDepartment.objects.exclude(id=department_id).filter(department_code=department_code).exists():
+#             return JsonResponse({'error': 'Department with this code already exists.'})
+#         else:
+#             # Update department
+#             amsDepartment.department_name = department_name
+#             amsDepartment.department_code = department_code
+#             amsDepartment.status = status
+
+#             amsDepartment.save()
+#             return JsonResponse({'success': 'Department updated successfully.'})
+#     else:
+#         return JsonResponse({'error': 'Invalid request method'}, status=400)
+
+
+
+
+
+def ajax_department_update(request):
+    if request.method == 'GET':
+        try:
+            department_id = request.GET['id']
+            department_name = request.GET['department_name']
+            department_code = request.GET['department_code']
+            status = request.GET['status']
+
+            ams_department = AmsDepartment.objects.get(id=department_id)
+
+            if not department_name:
+                return JsonResponse({'error': 'Department name cannot be blank.','success':''})
+            elif AmsDepartment.objects.exclude(id=department_id).filter(department_name=department_name).exists():
+                return JsonResponse({'error': 'Department with this name already exists.','success':''})
+            elif not department_code:
+                return JsonResponse({'error': 'Department code cannot be blank.'})
+            elif AmsDepartment.objects.exclude(id=department_id).filter(department_code=department_code).exists():
+                return JsonResponse({'error': 'Department with this code already exists.','success':''})
+            else:
+                # Update department
+                ams_department.department_name = department_name
+                ams_department.department_code = department_code
+                ams_department.status = status
+
+                ams_department.save()
+
+            return JsonResponse({'success': 'Department updated successfully.','error':''})
+
+        except AmsDepartment.DoesNotExist:
+            return JsonResponse({'error': 'Invalid department ID','success':''})
+    else:
+        return JsonResponse({'error': 'Invalid request method', 'success': '','success':''})
+
+
+
+
+def ajax_delete_row1(request):
+    if request.method == 'GET':
+        department_id = request.GET['id']
+        try:
+            # Assuming your model has a 'status' field
+            row = AmsDepartment.objects.get(id=department_id)
+            row.delete()
+
+            return JsonResponse({'success': 'Row deleted successfully.','error':''})
+        except AmsDepartment.DoesNotExist:
+            return JsonResponse({'error': 'Invalid row ID.','success':''})
+    else:
+        return JsonResponse({'error': 'Invalid request method.','success':''})
