@@ -18,7 +18,8 @@
 
 
 
-<form>
+<form method="post" action="{% url 'admin_employee_category' %}">
+    {% csrf_token %}
 <div class="panel panel-default">
     <div class="panel-heading ui-draggable-handle">
         <h1 class="panel-title"><strong></strong><b>New Employee Category</b></h1> 
@@ -32,18 +33,17 @@
                                               
             <div class="col-md-6">
                 <div>
-                    <input type="text" placeholder="Employee Category Name" class="form-control">
+                    <input type="text" placeholder="Employee Category Name" name="category_name"class="form-control">
                 </div>
                       
             </div>                                
             <div class="col-md-6">
-                <select class="form-control" placeholder="Area" data-live-search="true">
-                    <option>Area</option>
-                    <option>Accountant</option>
-                    <option>Teacher</option>
-                    <option>Librarian</option>
-                    <option>Cafeteria</option>
-                    <option>Other</option>
+                <select class="form-control" placeholder="Area" name="category_area" data-live-search="true">
+                    <option value="{{settings.EMP_ACCOUTANT}}">Accountant</option>
+                    <option value="{{settings.EMP_TEACHER}}">Teacher</option>
+                    <option value="{{settings.EMP_LIBRARIAN}}">Librarian</option>
+                    <option value="{{settings.EMP_CAFETERIA}}">Cafeteria</option>
+                    <option value="{{settings.EMP_OTHER}}">Other</option>
                     
                 </select>
                       
@@ -71,27 +71,39 @@
         {% comment %} <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper no-footer"><div class="dataTables_length" id="DataTables_Table_0_length"><label>Show <select name="DataTables_Table_0_length" aria-controls="DataTables_Table_0" class="form-control"><option value="10">10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option></select> entries</label></div><div id="DataTables_Table_0_filter" class="dataTables_filter"><label>Search:<input type="search" class="form-control " placeholder="" aria-controls="DataTables_Table_0"></label></div> {% endcomment %}
         <table class="table datatable dataTable no-footer" id="DataTables_Table_0" role="grid" aria-describedby="DataTables_Table_0_info">
             <thead>
-                <tr role="row"><th class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Name: activate to sort column ascending" style="width: 198px;">#</th><th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Position: activate to sort column ascending" style="width: 309px;">Employee Category Name</th><th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Office: activate to sort column ascending" style="width: 148px;">Area</th><th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Age: activate to sort column ascending" style="width: 70px;">Status</th><th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Start date: activate to sort column ascending" style="width: 137px;">Action</th></tr>
+                <tr role="row"><th class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Name: activate to sort column ascending" style="width: 198px;">#</th>
+                    <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Position: activate to sort column ascending" style="width: 309px;">Employee Category Name</th>
+                    <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Age: activate to sort column ascending" style="width: 70px;">Area</th>
+                    <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Age: activate to sort column ascending" style="width: 70px;">Status</th>
+                    <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Start date: activate to sort column ascending" style="width: 137px;">Action</th></tr>
             </thead>
             <tbody>
-            <tr role="row" class="odd">
-                    <td class="sorting_1">1</td>
-                    <td>Employee Category</td>
-                    <td>Other</td>
-                    <td><span class="label label-danger">Deactive</span></td>
-                    <td><button class="btn btn-primary btn-rounded" data-toggle="modal" data-target="#modal_basic"><span class="fa fa-pencil"></span></button><button class="btn btn-primary btn-rounded" onClick="delete_row('trow_1');"><span class="fa fa-trash-o"></span></button></td>
-                    
-                    
-                </tr><tr role="row" class="even">
-                    <td class="sorting_1">2</td>
-                    <td>Employee Category</td>
-                    <td>Librarian</td>
-                    <td><span class="label label-success label-form">Active</span></td>
-                    <td><button class="btn btn-primary btn-rounded" data-toggle="modal" data-target="#modal_basic"><span class="fa fa-pencil"></span></button></td>
-                    
-                    
-                
-                </tbody>
+                {% for employee in employee %}
+                    <tr id="{{ employee.id }}">
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ employee.employee_category_name}}</td>
+                        <td>{{ employee.get_employee_category_area_display}}</td>
+                        <td>
+                            {% if employee.status %}
+                                <span class="label label-success">Active</span>
+                            {% else %}
+                                <span class="label label-danger">Inactive</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <button class="btn btn-primary btn-rounded" onClick="edit_employee_row({{ employee.id }});" data-toggle="modal" data-target="#modal_basic">
+                                <span id="spinner{{ employee.id }}" class="fa fa-pencil"></span>
+                            </button>
+                            {% if not employee.status %}
+                                <button class="btn btn-primary btn-rounded" onClick="delete_employee_row({{ employee.id }});">
+                                    <span class="fa fa-trash-o"></span>
+                                </button>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        
         </table>
         {% comment %} <div class="dataTables_info" id="DataTables_Table_0_info" role="status" aria-live="polite">Showing 1 to 2 of 2 entries</div><div class="dataTables_paginate paging_simple_numbers" id="DataTables_Table_0_paginate"><a class="paginate_button previous disabled" aria-controls="DataTables_Table_0" data-dt-idx="0" tabindex="0" id="DataTables_Table_0_previous">Previous</a><span><a class="paginate_button current" aria-controls="DataTables_Table_0" data-dt-idx="1" tabindex="0">1</a></span><a class="paginate_button next" aria-controls="DataTables_Table_0" data-dt-idx="7" tabindex="0" id="DataTables_Table_0_next">Next</a></div></div> {% endcomment %}
     </div>
@@ -110,7 +122,6 @@
                     </div>
                     <div class="col-md-6">
                         <select class="form-control" data-live-search="true">
-                            <option>Area</option>
                             <option>Accountant</option>
                             <option>Teacher</option>
                             <option>Librarian</option>
@@ -121,9 +132,9 @@
                     </div><br></br>
                     
                     <div class="col-md-12">                                                                                
-                        <select class="form-control" data-live-search="true">
-                            <option>Active</option>
-                            <option>Deactive</option>
+                        <select class="form-control" data-live-search="true" id="status">
+                            <option value="1">Active</option>
+                            <option value="0">Deactive</option>
                             
                         </select>
                     </div>

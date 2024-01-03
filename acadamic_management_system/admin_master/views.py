@@ -1,8 +1,8 @@
 from django.shortcuts import render
-from .models import AmsClass,AmsDepartment,AmsDesignation,AmsQualification,AmsDivision
+from .models import AmsClass,AmsDepartment,AmsDesignation,AmsQualification,AmsDivision,AmsEmployeeCategory
 from django.contrib import messages
 from django.http import JsonResponse
-
+from django.conf import settings
 
 
 # Create your views here.
@@ -57,7 +57,10 @@ def admin_designation_manage(request):
         elif AmsDesignation.objects.filter(designation_code=designation_code).exists():
             messages.error(request, 'Designation with this code already exists.')
         else:
-            AmsDesignation.objects.create(designation_name=designation_name, designation_code=designation_code)
+            AmsDesignation.objects.create(
+                designation_name=designation_name, 
+                designation_code=designation_code
+                )
             messages.success(request, 'Designation created successfully.')
 
     return render(request, 'admin_master_designation_manage.html', {'ams_designations': ams_designations})
@@ -121,8 +124,29 @@ def admin_division_manage(request):
     return render(request, 'admin_master_division_manage.html', {'ams_divisions': ams_divisions})
 
 
-def admin_employee_category (request):
-    return render(request,'admin_master_employee_category_manage.html')
+
+def admin_employee_category(request):
+    employees = AmsEmployeeCategory.objects.all()
+
+    if request.method == 'POST':
+        employee_category_name = request.POST.get('category_name', '').strip()
+        employee_category_area = int(request.POST.get('category_area', '0'))
+
+        if not employee_category_name or not employee_category_area:
+            messages.error(request, 'Both Employee Name and Area are required.')
+        elif AmsEmployeeCategory.objects.filter(employee_category_name__iexact=employee_category_name).exists():
+            messages.error(request, 'Employee Name already exists.')
+        elif AmsEmployeeCategory.objects.exclude(employee_category_area=5).filter(employee_category_area=employee_category_area).exists():
+            messages.error(request, 'Employee Area already exists.')
+        else:
+            AmsEmployeeCategory.objects.create(
+                employee_category_name=employee_category_name,
+                employee_category_area=employee_category_area
+            )
+            messages.success(request, 'Employee added successfully.')
+
+    return render(request, 'admin_master_employee_category_manage.html', {"settings": settings,'employee':employees})
+
 
 
 
@@ -180,73 +204,40 @@ def ajax_department_view(request):
         }
         return JsonResponse(serialized_data)
 
+def ajax_designation_view(request):
+    designation_id = request.GET['id']
+    response_data = AmsDesignation.objects.get(id=designation_id)
+    serialized_data = {
+        'designation_name': response_data.designation_name,
+        'designation_code': response_data.designation_code,
+        'status': 1 if response_data.status else 0,
+    }
+    return JsonResponse(serialized_data)
 
-
-
-# def ajax_department_update(request,department_id):
-
-
-
-#     if request.method == 'POST':
-#         department_name = request.GET['department_name'], 
-#         department_code = request.GET['department_code'], 
-#         status=request.GET['status']
-
-#         try:
-#             amsDepartment=AmsDepartment.objects.get(id=department_id)
-#             if not department_name:
-#                 messages.error(request, 'Department name cannot be blank.')
-#             elif AmsDepartment.objects.exclude(id=department_id).filter(department_name=department_name).exists():
-#                 messages.error(request, 'Department with this name already exists.')
-#             elif not department_code:
-#                 messages.error(request, 'Department code cannot be blank.')
-#             elif AmsDepartment.objects.exclude(id=department_id).filter(department_code=department_code).exists():
-#                 messages.error(request, 'Department with this code already exists.')
-#             else:
-#             # Update department
-#                 amsDepartment.department_name = department_name
-#                 amsDepartment.department_code = department_code
-#                 amsDepartment.status=status
-
-#                 amsDepartment.save()
-#                 messages.success(request, 'Department updated successfully.')
-#         except AmsDepartment.DoesNotExist:
-#                 messages.error(request, 'invalid.')
-
-# from django.http import JsonResponse
-# from django.shortcuts import get_object_or_404
-# from django.contrib import messages
-# from .models import AmsDepartment
-
-# def ajax_department_update(request, department_id):
-#     if request.method == 'POST':
-#         department_name = request.POST.get('department_name', '').strip()
-#         department_code = request.POST.get('department_code', '').strip()
-#         status = request.POST.get('status')
-
-#         amsDepartment = get_object_or_404(AmsDepartment, id=department_id)
-
-#         if not department_name:
-#             return JsonResponse({'error': 'Department name cannot be blank.'})
-#         elif AmsDepartment.objects.exclude(id=department_id).filter(department_name=department_name).exists():
-#             return JsonResponse({'error': 'Department with this name already exists.'})
-#         elif not department_code:
-#             return JsonResponse({'error': 'Department code cannot be blank.'})
-#         elif AmsDepartment.objects.exclude(id=department_id).filter(department_code=department_code).exists():
-#             return JsonResponse({'error': 'Department with this code already exists.'})
-#         else:
-#             # Update department
-#             amsDepartment.department_name = department_name
-#             amsDepartment.department_code = department_code
-#             amsDepartment.status = status
-
-#             amsDepartment.save()
-#             return JsonResponse({'success': 'Department updated successfully.'})
-#     else:
-#         return JsonResponse({'error': 'Invalid request method'}, status=400)
-
-
-
+def ajax_division_view(request):
+    division_id = request.GET['id']
+    response_data = AmsDivision.objects.get(id=division_id)  # Update to your actual model name
+    serialized_data = {
+        'division_name': response_data.division_name,
+        'status': 1 if response_data.status else 0,
+    }
+    return JsonResponse(serialized_data)
+def ajax_qualification_view(request):
+    qualification_id = request.GET['id']
+    response_data = AmsQualification.objects.get(id=qualification_id)  # Update to your actual model name
+    serialized_data = {
+        'qualification_name': response_data.qualification_name,  # Update to your actual model name
+        'status': 1 if response_data.status else 0,
+    }
+    return JsonResponse(serialized_data)
+def ajax_class_view(request):
+    class_id = request.GET['id']
+    response_data = AmsClass.objects.get(id=class_id)  # Update to your actual model name
+    serialized_data = {
+        'class_name': response_data.class_name,  # Update to your actual model name
+        'status': 1 if response_data.status else 0,
+    }
+    return JsonResponse(serialized_data)
 
 
 def ajax_department_update(request):
@@ -282,7 +273,119 @@ def ajax_department_update(request):
     else:
         return JsonResponse({'error': 'Invalid request method', 'success': '','success':''})
 
+def ajax_designation_update(request):
+    if request.method == 'GET':
+        try:
+            designation_id = request.GET['id']
+            designation_name = request.GET['designation_name']
+            designation_code = request.GET['designation_code']
+            status = request.GET['status']
 
+            ams_designation = AmsDesignation.objects.get(id=designation_id)
+
+            if not designation_name:
+                return JsonResponse({'error': 'Designation name cannot be blank.', 'success': ''})
+            elif AmsDesignation.objects.exclude(id=designation_id).filter(designation_name=designation_name).exists():
+                return JsonResponse({'error': 'Designation with this name already exists.', 'success': ''})
+            elif not designation_code:
+                return JsonResponse({'error': 'Designation code cannot be blank.', 'success': ''})
+            elif AmsDesignation.objects.exclude(id=designation_id).filter(designation_code=designation_code).exists():
+                return JsonResponse({'error': 'Designation with this code already exists.', 'success': ''})
+            else:
+                # Update designation
+                ams_designation.designation_name = designation_name
+                ams_designation.designation_code = designation_code
+                ams_designation.status = status
+
+                ams_designation.save()
+
+            return JsonResponse({'success': 'Designation updated successfully.', 'error': ''})
+
+        except AmsDesignation.DoesNotExist:
+            return JsonResponse({'error': 'Invalid designation ID', 'success': ''})
+    else:
+        return JsonResponse({'error': 'Invalid request method', 'success': '', 'success': ''})
+
+def ajax_division_update(request):
+    if request.method == 'GET':
+        try:
+            division_id = request.GET['id']
+            division_name = request.GET['division_name']
+            status = request.GET['status']
+
+            ams_division = AmsDivision.objects.get(id=division_id)
+
+            if not division_name:
+                return JsonResponse({'error': 'Division name cannot be blank.', 'success': ''})
+            elif AmsDivision.objects.exclude(id=division_id).filter(division_name=division_name).exists():
+                return JsonResponse({'error': 'Division with this name already exists.', 'success': ''})
+            else:
+                # Update division
+                ams_division.division_name = division_name
+                ams_division.status = status
+
+                ams_division.save()
+
+            return JsonResponse({'success': 'Division updated successfully.', 'error': ''})
+
+        except AmsDivision.DoesNotExist:
+            return JsonResponse({'error': 'Invalid division ID', 'success': ''})
+    else:
+        return JsonResponse({'error': 'Invalid request method', 'success': ''})
+
+def ajax_qualification_update(request):
+    if request.method == 'GET':
+        try:
+            qualification_id = request.GET['id']
+            qualification_name = request.GET['qualification_name']
+            status = request.GET['status']
+
+            ams_qualification = AmsQualification.objects.get(id=qualification_id)  # Update to your actual model name
+
+            if not qualification_name:
+                return JsonResponse({'error': 'Qualification name cannot be blank.', 'success': ''})
+            elif AmsQualification.objects.exclude(id=qualification_id).filter(qualification_name=qualification_name).exists():  # Update to your actual model name
+                return JsonResponse({'error': 'Qualification with this name already exists.', 'success': ''})
+            else:
+                # Update qualification
+                ams_qualification.qualification_name = qualification_name  # Update to your actual model name
+                ams_qualification.status = status
+
+                ams_qualification.save()
+
+            return JsonResponse({'success': 'Qualification updated successfully.', 'error': ''})
+
+        except AmsQualification.DoesNotExist:  # Update to your actual model name
+            return JsonResponse({'error': 'Invalid qualification ID', 'success': ''})
+    else:
+        return JsonResponse({'error': 'Invalid request method', 'success': ''})
+
+def ajax_class_update(request):
+    if request.method == 'GET':
+        try:
+            class_id = request.GET['id']
+            class_name = request.GET['class_name']
+            status = request.GET['status']
+
+            ams_class = AmsClass.objects.get(id=class_id)  # Update to your actual model name
+
+            if not class_name:
+                return JsonResponse({'error': 'Class name cannot be blank.', 'success': ''})
+            elif AmsClass.objects.exclude(id=class_id).filter(class_name=class_name).exists():  # Update to your actual model name
+                return JsonResponse({'error': 'Class with this name already exists.', 'success': ''})
+            else:
+                # Update class
+                ams_class.class_name = class_name  # Update to your actual model name
+                ams_class.status = status
+
+                ams_class.save()
+
+            return JsonResponse({'success': 'Class updated successfully.', 'error': ''})
+
+        except AmsClass.DoesNotExist:  # Update to your actual model name
+            return JsonResponse({'error': 'Invalid class ID', 'success': ''})
+    else:
+        return JsonResponse({'error': 'Invalid request method', 'success': ''})
 
 
 def ajax_delete_row1(request):
@@ -298,3 +401,59 @@ def ajax_delete_row1(request):
             return JsonResponse({'error': 'Invalid row ID.','success':''})
     else:
         return JsonResponse({'error': 'Invalid request method.','success':''})
+    
+def ajax_delete_desrow1(request):
+    if request.method == 'GET':
+        designation_id = request.GET['id']
+        try:
+            # Assuming your model has a 'status' field
+            row = AmsDesignation.objects.get(id=designation_id)
+            row.delete()
+
+            return JsonResponse({'success': 'Row deleted successfully.','error':''})
+        except AmsDesignation.DoesNotExist:
+            return JsonResponse({'error': 'Invalid row ID.','success':''})
+    else:
+        return JsonResponse({'error': 'Invalid request method.','success':''})
+    
+def ajax_delete_divsrow(request):
+    if request.method == 'GET':
+        division_id = request.GET['id']
+        try:
+            # Assuming your model has a 'status' field
+            row = AmsDivision.objects.get(id=division_id)  # Update to your actual model name
+            row.delete()
+
+            return JsonResponse({'success': 'Row deleted successfully.', 'error': ''})
+        except AmsDivision.DoesNotExist:  # Update to your actual model name
+            return JsonResponse({'error': 'Invalid row ID.', 'success': ''})
+    else:
+        return JsonResponse({'error': 'Invalid request method.', 'success': ''})
+
+
+def ajax_delete_qualification_row(request):
+    if request.method == 'GET':
+        qualification_id = request.GET['id']
+        try:
+            # Assuming your model has a 'status' field
+            row = AmsQualification.objects.get(id=qualification_id)  # Update to your actual model name
+            row.delete()
+
+            return JsonResponse({'success': 'Row deleted successfully.', 'error': ''})
+        except AmsQualification.DoesNotExist:  # Update to your actual model name
+            return JsonResponse({'error': 'Invalid row ID.', 'success': ''})
+    else:
+        return JsonResponse({'error': 'Invalid request method.', 'success': ''})
+def ajax_delete_class_row(request):
+    if request.method == 'GET':
+        class_id = request.GET['id']
+        try:
+            # Assuming your model has a 'status' field
+            row = AmsClass.objects.get(id=class_id)  # Update to your actual model name
+            row.delete()
+
+            return JsonResponse({'success': 'Row deleted successfully.', 'error': ''})
+        except AmsClass.DoesNotExist:  # Update to your actual model name
+            return JsonResponse({'error': 'Invalid row ID.', 'success': ''})
+    else:
+        return JsonResponse({'error': 'Invalid request method.', 'success': ''})

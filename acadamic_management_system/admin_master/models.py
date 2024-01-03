@@ -25,6 +25,17 @@ class AmsDivision(models.Model):
     status = models.BooleanField(default=True)
 
 class AmsEmployeeCategory(models.Model):
+    
+    
+
+    EMPLOYEE_TYPE_CHOICES = [
+        (1, 'Accountant'),
+        (2, 'Teacher'),
+        (3, 'Librarian'),
+        (4, 'Cafeteria'),
+        (5, 'Other'),
+    ]
+
     employee_category_name = models.CharField(max_length=255)
-    employee_category_area = models.IntegerField(default=0)
+    employee_category_area = models.IntegerField(choices=EMPLOYEE_TYPE_CHOICES)
     status = models.BooleanField(default=True)

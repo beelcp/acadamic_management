@@ -64,7 +64,7 @@
             </thead>
             <tbody>
                 {% for ams_division in ams_divisions %}
-                <tr>
+                <tr id="{{ams_division.id}}" >
                     <td>{{ forloop.counter }}</td>
                     <td>{{ ams_division.division_name }}</td>
                     <td>
@@ -75,16 +75,22 @@
                         {% endif %}
                     </td>
                     <td>
-                        <button class="btn btn-primary btn-rounded" data-toggle="modal" data-target="#modal_basic">
-                            <span class="fa fa-pencil"></span>
+                        <button class="btn btn-primary btn-rounded" onClick="edit_divsrow({{ ams_division.id }});" data-toggle="modal" data-target="#modal_basic">
+                            <span id="spinner{{ams_division.id}}" class="fa fa-pencil"></span>
                         </button>
-                        <button class="btn btn-primary btn-rounded" onClick="delete_row('trow_{{ forloop.counter }}');">
+                        {% if not ams_division.status %}
+
+                        <button class="btn btn-primary btn-rounded" onClick="delete_divsrow1({{ ams_division.id }});">
+
                             <span class="fa fa-trash-o"></span>
                         </button>
+                        {% endif %}
+
                     </td>
                 </tr>
                 {% endfor %}
             </tbody>
+          
         </table>
     </div>
 
@@ -98,12 +104,12 @@
                 <div class="modal-body">
                     <div class="row">
                     <div class="col-md-6">
-                        <input type="text" placeholder="Division Name" class="form-control">
+                        <input type="text" placeholder="Division Name" id="division_name"class="form-control">
                     </div>
                     <div class="col-md-6">
-                        <select class="form-control" data-live-search="true">
-                            <option>Active</option>
-                            <option>Deactive</option>
+                        <select class="form-control" data-live-search="true" id="status" >
+                            <option value="1">Active</option>
+                            <option value="0">Deactive</option>
                             
                         </select>
                     </div><br></br>
@@ -115,7 +121,10 @@
 
                     <div class="panel-footer">
                         <button class="btn btn-default" data-dismiss="modal">Close</button>                                    
-                        <button class="btn btn-primary pull-right">Update</button>
+                        <button class="btn btn-primary pull-right" onclick="update_divsrow()">Update</button>
+
+                        <input type="hidden" class="form-control" id="division_id">
+
                     </div>
                     
                 
@@ -141,6 +150,15 @@
         </div>
     </div>
 </div>
+<input type="hidden" value="{{request.scheme}}://{{request.get_host}}/ajax_division_view" id="url_name">
+<input type="hidden" value="{{request.scheme}}://{{request.get_host}}/ajax_division_update" id="url_update">
+<input type="hidden" value="{{request.scheme}}://{{request.get_host}}/ajax_delete_divsrow" id="url_delete">
+
+
 <!-- END MESSAGE BOX-->    
    
 {% endblock content %}
+<div class="form-group">
+    <button type="button" class="btn btn-info mb-control" data-box="#message-box-sound-1">Alert</button>
+    <button type="button" class="btn btn-danger mb-control" data-box="#message-box-sound-2">Fail</button>
+</div>

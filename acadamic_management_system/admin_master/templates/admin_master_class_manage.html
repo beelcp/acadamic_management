@@ -63,34 +63,31 @@
                 <tr role="row"><th class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Name: activate to sort column ascending" style="width: 198px;">#</th><th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Position: activate to sort column ascending" style="width: 309px;">Class Name</th><th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Age: activate to sort column ascending" style="width: 70px;">Status</th><th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Start date: activate to sort column ascending" style="width: 137px;">Action</th></tr>
             </thead>
             <tbody>
-            {% for ams_class in ams_classes %}
-                <tr >
-                    <td class="sorting_1">{{ forloop.counter }}</td>
-                    <td>{{ ams_class.class_name }}</td>
-                    <td>
-                        {% if ams_class.status %}
-                            <span class="label label-success">Active</span>
-                        {% else %}
-                            <span class="label label-danger">Deactive</span>
-                        {% endif %}
-                    </td>
-                    <td>
-                        <button class="btn btn-primary btn-rounded" data-toggle="modal" data-target="#modal_basic">
-                            <span class="fa fa-pencil"></span>
-                        </button>
-                        <button class="btn btn-primary btn-rounded" onClick="delete_row('trow_{{ forloop.counter }}');">
-                            <span class="fa fa-trash-o"></span>
-                        </button>
-                    </td>
-                </tr>
-            {% endfor %}
-
-            <tr role="row" class="odd">
-                    <td class="sorting_1">1</td>
-                    <td>Class</td>
-                    <td><span class="label label-danger">Deactive</span></td>
-                    <td><button class="btn btn-primary btn-rounded" data-toggle="modal" data-target="#modal_basic"><span class="fa fa-pencil"></span></button><button class="btn btn-primary btn-rounded" onClick="delete_row('trow_1');"><span class="fa fa-trash-o"></span></button></td>
-                </tbody>
+                {% for ams_class in ams_classes %}
+                    <tr id="{{ams_class.id}}">
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ ams_class.class_name }}</td>
+                        <td>
+                            {% if ams_class.status %}
+                                <span class="label label-success">Active</span>
+                            {% else %}
+                                <span class="label label-danger">Inactive</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <button class="btn btn-primary btn-rounded" onClick="edit_class_row({{ ams_class.id }});" data-toggle="modal" data-target="#modal_basic">
+                                <span id="spinner{{ams_class.id}}" class="fa fa-pencil"></span>
+                            </button>
+                            {% if not ams_class.status %}
+                                <button class="btn btn-primary btn-rounded" onClick="delete_class_row({{ ams_class.id }});">
+                                    <span class="fa fa-trash-o"></span>
+                                </button>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+            
         </table>
     </div>
 
@@ -104,12 +101,12 @@
                 <div class="modal-body">
                     <div class="row">
                     <div class="col-md-6">
-                        <input type="text" placeholder="Class Name" class="form-control">
+                        <input type="text" placeholder="Class Name" id="class_name"class="form-control">
                     </div>
                     <div class="col-md-6">
-                        <select class="form-control" data-live-search="true">
-                            <option>Active</option>
-                            <option>Deactive</option>
+                        <select class="form-control" data-live-search="true" id="status">
+                            <option value="1">Active</option>
+                            <option value="0">Deactive</option>
                             
                         </select>
                     </div><br></br>
@@ -121,7 +118,9 @@
 
                     <div class="panel-footer">
                         <button class="btn btn-default" data-dismiss="modal">Close</button>                                    
-                        <button class="btn btn-primary pull-right">Update</button>
+                        <button class="btn btn-primary pull-right" onclick="update_class_row()">Update</button>
+                        <input type="hidden" class="form-control" id="class_id">
+                        
                     </div>
                     
                 
@@ -129,6 +128,10 @@
         </div>
     </div>
 </div>
+<input type="hidden" value="{{ request.scheme }}://{{ request.get_host }}/ajax_class_view" id="url_name">
+<input type="hidden" value="{{ request.scheme }}://{{ request.get_host }}/ajax_class_update" id="url_update">
+<input type="hidden" value="{{ request.scheme }}://{{ request.get_host }}/ajax_delete_class_row" id="url_delete">
+
 <!-- MESSAGE BOX-->
 <div class="message-box animated fadeIn" data-sound="alert" id="mb-remove-row">
     <div class="mb-container">

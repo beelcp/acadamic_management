@@ -33,13 +33,13 @@
                                               
             <div class="col-md-6">
                 <div>
-                    <input type="text" placeholder="Department Name" name="designation_name" required class="form-control">
+                    <input type="text" placeholder="Designation Name" name="designation_name" required class="form-control">
                 </div>
                       
             </div>                                
             <div class="col-md-6">
                 <div>
-                    <input type="text" placeholder="Department Code" name="designation_code"required class="form-control">
+                    <input type="text" placeholder="Designation Code" name="designation_code"required class="form-control">
                 </div>
                       
             </div>
@@ -69,28 +69,30 @@
             </thead>
             <tbody>
                 {% for ams_designation in ams_designations %}
-                <tr>
-                    <td >{{ forloop.counter }}</td>
-                    <td>{{ ams_designation.designation_name }}</td>
-                    <td>{{ ams_designation.designation_code }}</td>
-                    <td>
-                        {% if ams_designation.status %}
-                            <span class="label label-success">Active</span>
-                        {% else %}
-                            <span class="label label-danger">Deactive</span>
-                        {% endif %}
-                    </td>
-                    <td>
-                        <button class="btn btn-primary btn-rounded" data-toggle="modal" data-target="#modal_basic">
-                            <span class="fa fa-pencil"></span>
-                        </button>
-                        <button class="btn btn-primary btn-rounded" onClick="delete_row('trow_{{ forloop.counter }}');">
-                            <span class="fa fa-trash-o"></span>
-                        </button>
-                    </td>
-                </tr>
+                    <tr id="{{ams_designation.id}}">
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ ams_designation.designation_name }}</td>
+                        <td>{{ ams_designation.designation_code }}</td>
+                        <td>
+                            {% if ams_designation.status %}
+                                <span class="label label-success">Active</span>
+                            {% else %}
+                                <span class="label label-danger">Inactive</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <button class="btn btn-primary btn-rounded" onClick="edit_desrow({{ ams_designation.id }});" data-toggle="modal" data-target="#modal_basic">
+                                <span id="spinner{{ams_designation.id}}" class="fa fa-pencil"></span>
+                            </button>
+                            {% if not ams_designation.status %}
+                                <button class="btn btn-primary btn-rounded" onClick="delete_desrow1({{ ams_designation.id }});">
+                                    <span class="fa fa-trash-o"></span>
+                                </button>
+                            {% endif %}
+                        </td>
+                    </tr>
                 {% endfor %}
-                </tbody>
+            </tbody>
         </table>
     </div>
 
@@ -104,15 +106,15 @@
                 <div class="modal-body">
                     <div class="row">
                     <div class="col-md-6">
-                        <input type="text" placeholder="Designation Name" class="form-control">
+                        <input type="text" placeholder="Designation Name" class="form-control" id="designation_name">
                     </div>
                     <div class="col-md-6">
-                        <input type="text" placeholder="Designation Code" class="form-control">
+                        <input type="text" placeholder="Designation Code" class="form-control" id="designation_code">
                     </div><br></br>
                     <div class="col-md-12">                                                                                
-                        <select class="form-control" data-live-search="true">
-                            <option>Active</option>
-                            <option>Deactive</option>
+                        <select class="form-control" data-live-search="true" id="status">
+                            <option value="1">Active</option>
+                            <option value="0">Deactive</option>
                             
                         </select>
                     </div>
@@ -123,7 +125,9 @@
 
                     <div class="panel-footer">
                         <button class="btn btn-default" data-dismiss="modal">Close</button>                                    
-                        <button class="btn btn-primary pull-right">Update</button>
+                        <button class="btn btn-primary pull-right" onclick="update_desrow()">Update</button>
+                        <input type="hidden" class="form-control" id="designation_id">
+
                     </div>
                     
                     
@@ -132,6 +136,10 @@
         </div>
     </div>
 </div>
+<input type="hidden" value="{{request.scheme}}://{{request.get_host}}/ajax_designation_view" id="url_name">
+<input type="hidden" value="{{request.scheme}}://{{request.get_host}}/ajax_designation_update" id="url_update">
+<input type="hidden" value="{{request.scheme}}://{{request.get_host}}/ajax_delete_desrow1" id="url_delete">
+
 <!-- MESSAGE BOX-->
 <div class="message-box animated fadeIn" data-sound="alert" id="mb-remove-row">
     <div class="mb-container">
@@ -153,3 +161,8 @@
 <!-- END MESSAGE BOX-->    
    
 {% endblock content %}
+
+<div class="form-group">
+    <button type="button" class="btn btn-info mb-control" data-box="#message-box-sound-1">Alert</button>
+    <button type="button" class="btn btn-danger mb-control" data-box="#message-box-sound-2">Fail</button>
+</div>
