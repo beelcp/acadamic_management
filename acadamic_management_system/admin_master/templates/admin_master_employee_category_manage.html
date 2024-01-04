@@ -18,7 +18,7 @@
 
 
 
-<form method="post" action="{% url 'admin_employee_category' %}">
+<form method="post" >
     {% csrf_token %}
 <div class="panel panel-default">
     <div class="panel-heading ui-draggable-handle">
@@ -91,16 +91,16 @@
                             {% endif %}
                         </td>
                         <td>
-                            <button class="btn btn-primary btn-rounded" onClick="edit_employee_row({{ employee.id }});" data-toggle="modal" data-target="#modal_basic">
+                            <button class="btn btn-primary btn-rounded" onClick="edit_employee_category_row({{ employee.id }});">
                                 <span id="spinner{{ employee.id }}" class="fa fa-pencil"></span>
                             </button>
                             {% if not employee.status %}
-                                <button class="btn btn-primary btn-rounded" onClick="delete_employee_row({{ employee.id }});">
-                                    <span class="fa fa-trash-o"></span>
+                                <button class="btn btn-primary btn-rounded" onClick="delete_employee_category_row({{ employee.id }});">
+                                     <span class="fa fa-trash-o"></span>
                                 </button>
                             {% endif %}
                         </td>
-                    </tr>
+    </tr>
                 {% endfor %}
             </tbody>
         
@@ -118,15 +118,15 @@
                 <div class="modal-body">
                     <div class="row">
                     <div class="col-md-6">
-                        <input type="text" placeholder="Employee Category Name" class="form-control">
+                        <input type="text" placeholder="Employee Category Name" id="category_name"class="form-control">
                     </div>
                     <div class="col-md-6">
-                        <select class="form-control" data-live-search="true">
-                            <option>Accountant</option>
-                            <option>Teacher</option>
-                            <option>Librarian</option>
-                            <option>Cafeteria</option>
-                            <option>Other</option>
+                        <select class="form-control" data-live-search="true" id="category_area">
+                            <option value="1">Accountant</option>
+                            <option value="2">Teacher</option>
+                            <option value="3">Librarian</option>
+                            <option value="4">Cafeteria</option>
+                            <option value="5">Other</option>
                                     
                         </select>
                     </div><br></br>
@@ -146,7 +146,9 @@
 
                     <div class="panel-footer">
                         <button class="btn btn-default" data-dismiss="modal">Close</button>                                    
-                        <button class="btn btn-primary pull-right">Update</button>
+                        <button class="btn btn-primary pull-right" onClick="update_employee_category_row()">Update</button>
+                        <input type="hidden" class="form-control" id="category_id">
+
                     </div>
                     
                 
@@ -154,6 +156,11 @@
         </div>
     </div>
 </div>
+<input type="hidden" value="{{request.scheme}}://{{request.get_host}}/ajax_employee_category_view" id="url_name">
+<input type="hidden" value="{{request.scheme}}://{{request.get_host}}/ajax_employee_category_update" id="url_update">
+<input type="hidden" value="{{request.scheme}}://{{request.get_host}}/ajax_delete_employee_row" id="url_delete">
+
+
 <!-- MESSAGE BOX-->
 <div class="message-box animated fadeIn" data-sound="alert" id="mb-remove-row">
     <div class="mb-container">

@@ -130,7 +130,7 @@ def admin_employee_category(request):
 
     if request.method == 'POST':
         employee_category_name = request.POST.get('category_name', '').strip()
-        employee_category_area = int(request.POST.get('category_area', '0'))
+        employee_category_area = request.POST.get('category_area', '').strip()
 
         if not employee_category_name or not employee_category_area:
             messages.error(request, 'Both Employee Name and Area are required.')
@@ -171,28 +171,7 @@ def ajax_view(request):
 
 
 
-# def ajax_department_view(request):
-#     if request.method == 'GET' and request.is_ajax():
-#         department_id = request.POST.get('id', '')
 
-#         # Retrieve AmsDepartment object based on the 'id'
-#         try:
-#             department = AmsDepartment.objects.get(id=department_id)
-#             response_data = {
-#                 'message': 'Success',
-#                 'department_name': department.department_name,
-#                 'department_code': department.department_code,
-#                 'status': department.status,
-#                 # Add other data as needed
-#             }
-#         except AmsDepartment.DoesNotExist:
-#             response_data = {'message': 'Department not found'}
-
-#         return JsonResponse(response_data)
-#     else:
-#         # Handle non-AJAX requests, if needed
-#         return render(request, 'your_template.html')
-    
 def ajax_department_view(request):
         department_id = request.GET['id']
         response_data = AmsDepartment.objects.get(id=department_id)
@@ -203,6 +182,26 @@ def ajax_department_view(request):
 
         }
         return JsonResponse(serialized_data)
+
+def ajax_employee_category_view(request):
+    if request.method == 'GET':
+        try:
+            category_id = request.GET['id']
+            response_data = AmsEmployeeCategory.objects.get(id=category_id)
+
+            serialized_data = {
+                'employee_category_name': response_data.employee_category_name,
+                'employee_category_area': response_data.employee_category_area,
+                'status': 1 if response_data.status else 0,
+            }
+
+            return JsonResponse(serialized_data)
+
+        except AmsEmployeeCategory.DoesNotExist:
+            return JsonResponse({'error': 'Invalid employee category ID', 'success': ''})
+    else:
+        return JsonResponse({'error': 'Invalid request method', 'success': ''})
+
 
 def ajax_designation_view(request):
     designation_id = request.GET['id']
@@ -360,6 +359,47 @@ def ajax_qualification_update(request):
     else:
         return JsonResponse({'error': 'Invalid request method', 'success': ''})
 
+
+
+def ajax_employee_category_update(request):
+    if request.method == 'GET':
+        try:
+            category_id = request.GET['id']
+            category_name = request.GET['category_name']
+            category_area = request.GET['category_area']
+            status = request.GET['status']
+
+            # Fetch the category object
+            employee_category = AmsEmployeeCategory.objects.get(id=category_id)
+
+            # Check if the new name is blank or already exists
+            if not category_name:
+                return JsonResponse({'error': 'Employee Name cannot be blank.', 'success': ''})
+            elif AmsEmployeeCategory.objects.exclude(id=category_id).filter(employee_category_name__iexact=category_name).exists():
+                return JsonResponse({'error': 'Employee Name already exists.', 'success': ''})
+
+            # Check if the new area is blank or already exists
+            elif not category_area:
+                return JsonResponse({'error': 'Employee Area cannot be blank.', 'success': ''})
+            elif AmsEmployeeCategory.objects.exclude(id=category_id).filter(employee_category_area=category_area).exists():
+                return JsonResponse({'error': 'Employee Area already exists.', 'success': ''})
+            else:
+                # Update the category
+                employee_category.employee_category_name = category_name
+                employee_category.employee_category_area = category_area
+                employee_category.status = status
+
+                # Save the changes
+                employee_category.save()
+
+                return JsonResponse({'success': 'Category updated successfully.', 'error': ''})
+
+        except AmsEmployeeCategory.DoesNotExist:
+            return JsonResponse({'error': 'Invalid category ID', 'success': ''})
+    else:
+        return JsonResponse({'error': 'Invalid request method', 'success': ''})
+
+
 def ajax_class_update(request):
     if request.method == 'GET':
         try:
@@ -454,6 +494,21 @@ def ajax_delete_class_row(request):
 
             return JsonResponse({'success': 'Row deleted successfully.', 'error': ''})
         except AmsClass.DoesNotExist:  # Update to your actual model name
+            return JsonResponse({'error': 'Invalid row ID.', 'success': ''})
+    else:
+        return JsonResponse({'error': 'Invalid request method.', 'success': ''})
+
+
+def ajax_delete_employee_row(request):
+    if request.method == 'GET':
+        employee_id = request.GET['id']
+        try:
+            # Assuming your model has a 'status' field
+            row = AmsEmployeeCategory.objects.get(id=employee_id)  # Update to your actual model name
+            row.delete()
+
+            return JsonResponse({'success': 'Row deleted successfully.', 'error': ''})
+        except AmsEmployeeCategory.DoesNotExist:  # Update to your actual model name
             return JsonResponse({'error': 'Invalid row ID.', 'success': ''})
     else:
         return JsonResponse({'error': 'Invalid request method.', 'success': ''})
