@@ -214,7 +214,30 @@
         });
     }
     
-    
+function edit_subject_row(id) {
+    document.getElementById('spinner' + id).className = "fa fa-spinner";
+    document.getElementById("subject_id").value = id;
+
+    $.ajax({
+        type: "GET",
+        url: document.getElementById("url_name").value,
+        data: {
+            'id': id
+        },
+        dataType: "json",
+        success: function (data) {
+            document.getElementById("subject_name").value = data.subject_name;
+            document.getElementById("status").value = data.status;
+            console.log(data.status);
+            $("#modal_basic").show();
+            document.getElementById('spinner' + id).className = "fa fa-pencil";
+        },
+        error: function (error) {
+            console.log(error);
+        }
+    });
+}
+
   
     
     function delete_row1(id) {
@@ -416,6 +439,40 @@
         });
     }
     
+function delete_subject_row(id) {
+    var box = $("#mb-remove-row");
+    box.addClass("open");
+
+    box.find(".mb-control-yes").on("click", function () {
+        box.removeClass("open");
+
+        // Assuming you're using AJAX to send a POST request to the Django view
+        $.ajax({
+            type: "GET",
+            url: document.getElementById("url_delete").value,
+            data: {
+                'id': id,
+            },
+            dataType: "json",
+            success: function (data) {
+                if (data.success) {
+                    $("#" + id).hide("slow", function () {
+                        $(this).remove();
+                    });
+                    // Handle success (e.g., refresh the page or update the UI)
+                } else {
+                    // Handle error (e.g., display an error message)
+                    alert(data.error);
+                }
+            },
+            error: function (error) {
+                console.error('Error occurred:', error);
+            }
+        });
+    });
+}
+
+
     
     function update_row() {
         // Department
@@ -648,4 +705,52 @@ function update_employee_category_row() {
             console.error('Error occurred:', error);
         }
     });
+}
+
+function update_subject_row() {
+    var id = document.getElementById("subject_id").value;
+    var subject_name = document.getElementById("subject_name").value;
+    var status = document.getElementById("status").value;
+
+    // Show loading indicator
+    $("#loading_indicator").show();
+
+    $.ajax({
+        type: "GET",
+        url: document.getElementById("url_update").value,
+        data: {
+            'id': id,
+            'subject_name': subject_name,
+            'subject_area': subject_area,  // Include subject area in the data sent to the server
+            'status': status
+        },
+        dataType: "json",
+        success: function (data) {
+            // Hide loading indicator on success
+            $("#loading_indicator").hide();
+
+            if (data.success !== '') {
+                alert(data.success);
+                $("#modal_basic").modal("hide");
+                window.location.reload(true);
+            } else {
+                alert(data.error);
+            }
+        },
+        error: function (error) {
+            // Hide loading indicator on error
+            $("#loading_indicator").hide();
+
+            console.error('Error occurred:', error);
+        }
+    });
+}
+function checkAll() {
+    var selectAllCheckbox = document.getElementById("selectAllCheckbox");
+    var classCheckboxes = document.querySelectorAll('.classCheckbox');
+    
+ classCheckboxes.forEach(function (checkbox) {
+
+    checkbox.checked = selectAllCheckbox.checked;
+});
 }

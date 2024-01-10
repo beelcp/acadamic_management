@@ -39,3 +39,8 @@ class AmsEmployeeCategory(models.Model):
     employee_category_name = models.CharField(max_length=255)
     employee_category_area = models.IntegerField(choices=EMPLOYEE_TYPE_CHOICES)
     status = models.BooleanField(default=True)
+
+class AmsSubject(models.Model):
+    subject_name = models.CharField(max_length=150)
+    class_name = models.ManyToManyField('AmsClass')
+    status = models.BooleanField(default=True)

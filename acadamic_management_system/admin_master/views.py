@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import AmsClass,AmsDepartment,AmsDesignation,AmsQualification,AmsDivision,AmsEmployeeCategory
+from .models import AmsClass,AmsDepartment,AmsDesignation,AmsQualification,AmsDivision,AmsEmployeeCategory,AmsSubject
 from django.contrib import messages
 from django.http import JsonResponse
 from django.conf import settings
@@ -152,6 +152,34 @@ def admin_employee_category(request):
 
 
 
+
+
+def admin_subject_manage(request):
+    classes = AmsClass.objects.all()
+    subjects = AmsSubject.objects.all()
+
+    if request.method == 'POST':
+        subject_name = request.POST.get('subject_name', '').strip()
+        class_id = request.POST.getlist('classes')  # Add a new input field for class selection in your HTML form
+
+        if not subject_name:
+            messages.error(request, 'Subject name cannot be blank.')
+        elif AmsSubject.objects.filter(subject_name=subject_name).exists():
+            messages.error(request, 'Subject with this name already exists for the selected class.')
+        else:
+            # Get the selected class instance
+          
+
+            # Create the subject with the selected class
+            sub=AmsSubject.objects.create(subject_name=subject_name)
+            sub.class_name.set(class_id)
+            sub.save()
+            messages.success(request, 'Subject created successfully.')
+
+    return render(request, 'admin_master_subject_manage.html', {'classes': classes, 'subjects': subjects})
+
+
+
 def ajax_view(request):
     if request.method == 'POST' and request.is_ajax():
         id_param = request.POST.get('id', '')
@@ -237,6 +265,17 @@ def ajax_class_view(request):
         'status': 1 if response_data.status else 0,
     }
     return JsonResponse(serialized_data)
+
+
+def ajax_subject_view(request):
+    subject_id = request.GET['id']
+    response_data = AmsSubject.objects.get(id=subject_id)  # Update to your actual model name
+    serialized_data = {
+        'subject_name': response_data.subject_name,  # Update to your actual model name
+        'status': 1 if response_data.status else 0,
+    }
+    return JsonResponse(serialized_data)
+
 
 
 def ajax_department_update(request):
@@ -428,6 +467,35 @@ def ajax_class_update(request):
         return JsonResponse({'error': 'Invalid request method', 'success': ''})
 
 
+
+def ajax_subject_update(request):
+    if request.method == 'GET':
+        try:
+            subject_id = request.GET['id']
+            subject_name = request.GET['subject_name']
+            status = request.GET['status']
+
+            subject = AmsSubject.objects.get(id=subject_id)  # Update to your actual model name
+
+            if not subject_name:
+                return JsonResponse({'error': 'Subject name cannot be blank.', 'success': ''})
+            elif AmsSubject.objects.exclude(id=subject_id).filter(subject_name=subject_name).exists():  # Update to your actual model name
+                return JsonResponse({'error': 'Subject with this name already exists.', 'success': ''})
+            else:
+                # Update subject
+                subject.subject_name = subject_name  # Update to your actual model name
+                subject.status = status
+
+                subject.save()
+
+            return JsonResponse({'success': 'Subject updated successfully.', 'error': ''})
+
+        except AmsSubject.DoesNotExist:  # Update to your actual model name
+            return JsonResponse({'error': 'Invalid subject ID', 'success': ''})
+    else:
+        return JsonResponse({'error': 'Invalid request method', 'success': ''})
+
+
 def ajax_delete_row1(request):
     if request.method == 'GET':
         department_id = request.GET['id']
@@ -509,6 +577,22 @@ def ajax_delete_employee_row(request):
 
             return JsonResponse({'success': 'Row deleted successfully.', 'error': ''})
         except AmsEmployeeCategory.DoesNotExist:  # Update to your actual model name
+            return JsonResponse({'error': 'Invalid row ID.', 'success': ''})
+    else:
+        return JsonResponse({'error': 'Invalid request method.', 'success': ''})
+
+
+
+def ajax_delete_subject_row(request):
+    if request.method == 'GET':
+        subject_id = request.GET.get('id')
+        try:
+            # Assuming your model has a 'status' field
+            row = AmsSubject.objects.get(id=subject_id)  # Update to your actual model name
+            row.delete()
+
+            return JsonResponse({'success': 'Row deleted successfully.', 'error': ''})
+        except AmsSubject.DoesNotExist:  # Update to your actual model name
             return JsonResponse({'error': 'Invalid row ID.', 'success': ''})
     else:
         return JsonResponse({'error': 'Invalid request method.', 'success': ''})

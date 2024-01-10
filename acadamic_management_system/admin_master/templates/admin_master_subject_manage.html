@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+{% block content %}
+<!-- START BREADCRUMB -->
+<ul class="breadcrumb">
+    <li><a href="#">Master</a></li>                    
+    <li class="active">Manage Subject</li>
+</ul>
+<!-- END BREADCRUMB -->  
+<div class="content-frame-top">                        
+    <div class="page-title">                    
+        <h2><span class="fa fa-arrow-circle-o-left"></span> Manage Subject</h2>
+    </div>                                      
+    
+
+    
+</div>
+
+
+
+<div class="page-content-wrap">                
+
+    <div class="row">
+
+        <div class="col-md-6">
+            <form class="form-horizontal" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><strong>New </strong> Subjects</h3>
+                    <ul class="panel-controls">
+                        <li><a href="#" class="panel-remove"><span class="fa fa-times"></span></a></li>
+                    </ul>
+                </div>
+                <div class="panel-body">                                                                        
+                    
+                    <div class="row">
+                        
+                        <div class="col-md-12">
+                            
+                            <div class="form-group">
+                                <div class="col-md-12 col-xs-12">                                                                                                                                                        
+                                    <input type="text" required autofocus name='subject_name' class="form-control" placeholder="Subject Name"/>                                                    
+                                </div>
+                            </div>
+                            
+                            
+                        </div>
+                        
+                        
+                    </div>
+
+                </div>
+                <div class="panel-heading">
+                    <h3 class="panel-title"><strong>Class </strong></h3>
+                    <ul class="panel-controls">
+                        <li><div class="checkbox">
+                            <input type="checkbox" 
+                            class="classCheckbox"
+                            {% comment %} class="icheckbox" {% endcomment %}
+                             id="selectAllCheckbox" onclick="checkAll()" />
+                            
+                        </div></li>
+                    </ul>
+                </div>
+                
+                <div class="panel-body">                                                                        
+                    
+                    <div class="row">
+                        
+                        <div class="col-md-12">
+                            {% for class in classes %}
+                            <div class="checkbox">
+                                <input type="checkbox" name="classes" id="class_id" class="classCheckbox" value="{{class.id}}"/>
+                                <label style="font-weight: bold;">Class {{class.class_name}}</label>
+                            </div>
+                        {% endfor %}
+                       
+                            
+                            
+                            
+                            {% comment %} <div class="form-group">
+                                <div class="col-md-12 col-xs-12">                                                                                                                                                        
+                                    <input type="text" required autofocus name='department_name' class="form-control" placeholder="Subject Name"/>                                                    
+                                </div>
+                            </div>
+                             {% endcomment %}
+                            
+                        </div>
+                        
+                        
+                    </div>
+
+                </div>
+
+                <div class="panel-footer">
+                    <input type="reset" value="Clear Form" class="btn btn-default">                                 
+                    <button class="btn btn-primary pull-right">Submit</button>
+                </div>
+            </div>
+        </form> 
+
+
+        </div>
+
+        <div class="col-md-6">
+
+            <div class="panel panel-default">
+                <div class="panel-heading">                                
+                    <h3 class="panel-title">Default</h3>
+                    <ul class="panel-controls">
+                        <li><a href="#" class="panel-collapse"><span class="fa fa-angle-down"></span></a></li>
+                        <li><a href="#" class="panel-refresh"><span class="fa fa-refresh"></span></a></li>
+                        <li><a href="#" class="panel-remove"><span class="fa fa-times"></span></a></li>
+                    </ul>                                
+                </div>
+                <div class="panel-body">
+                    <table class="table datatable">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Subjects Name</th>
+                                <th>Status</th>
+                                <th>Action</th>
+
+                            </tr>
+                        </thead>
+                        <tbody> 
+                            {% for Subject in subjects %}
+                            <tr >
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ Subject.subject_name }}</td>
+                                <td>
+                                    {% if Subject.status %}
+                                    <span class="label label-success ">Active</span>
+                                    {% else %}
+                                    <span class="label label-danger label-form">Deactive</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <button class="btn btn-primary btn-rounded" onclick="edit_subject_row({{Subject.id}})">
+                                        <span id ="spinner{{Subject.id}}" class="fa fa-pencil"></span>
+                                    </button>
+                                    {% if not Subject.status %}
+                                    
+                                        <button class="btn btn-primary btn-rounded" onclick="delete_subject_row({{Subject.id}})">
+                                            <span class="glyphicon glyphicon-trash"></span>
+                                        </button>
+                                    
+                                    {% endif %}
+                                    {% comment %} <button class="btn btn-primary" onclick="edit_view_subject({{Subject.id}})">
+                                        
+                                        <span class="glyphicon glyphicon-eye-open"></span> {% endcomment %}
+                                    </button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <input type="hidden" value="{{ request.scheme }}://{{ request.get_host }}/ajax_subject_view" id="url_name">
+            <input type="hidden" value="{{ request.scheme }}://{{ request.get_host }}/ajax_subject_update" id="url_update">
+            <input type="hidden" value="{{ request.scheme }}://{{ request.get_host }}/ajax_delete_subject_row" id="url_delete">
+            
+        </div>
+
+    </div>
+
+
+    
+</div>
+<!-- MESSAGE BOX-->
+<div class="message-box animated fadeIn" data-sound="alert" id="mb-remove-row">
+    <div class="mb-container">
+        <div class="mb-middle">
+            <div class="mb-title"><span class="fa fa-times"></span> Remove <strong>Data</strong> ?</div>
+            <div class="mb-content">
+                <p>Are you sure you want to remove this row?</p>                    
+                <p>Press Yes if you sure.</p>
+            </div>
+            <div class="mb-footer">
+                <div class="pull-right">
+                    <button class="btn btn-success btn-lg mb-control-yes">Yes</button>
+                    <button class="btn btn-default btn-lg mb-control-close">No</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END MESSAGE BOX-->    
+   
+{% endblock content %}
+<div class="form-group">
+    <button type="button" class="btn btn-info mb-control" data-box="#message-box-sound-1">Alert</button>
+    <button type="button" class="btn btn-danger mb-control" data-box="#message-box-sound-2">Fail</button>
+</div>

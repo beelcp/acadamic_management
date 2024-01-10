@@ -45,5 +45,12 @@ urlpatterns = [
     path('ajax_employee_category_update/', views.ajax_employee_category_update, name='ajax_employee_category_update'),
     path('ajax_delete_employee_row/', views.ajax_delete_employee_row, name='ajax_delete_employee_row'),
 
-
+    path('admin_subject_manage/', views.admin_subject_manage, name='admin_subject_manage'),
+    path('ajax_subject_view/', views.ajax_subject_view, name='ajax_subject_view'),
+    path('ajax_subject_update/', views.ajax_subject_update, name='ajax_subject_update'),
+    path('ajax_delete_subject_row/', views.ajax_delete_subject_row, name='ajax_delete_subject_row'),
+    
+    path('admin_subject_manage/', views.admin_subject_manage, name='admin_subject_manage'),
 ]
+
+

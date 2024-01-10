@@ -56,10 +56,18 @@
                             <li><a href="{% url 'admin_class_manage' %}"><span class="fa fa-users"></span>Class</a></li>
                             <li><a href="{% url 'admin_division_manage' %}"><span class="fa fa-asterisk"></span>Division</a></li>
                             <li><a href="{% url 'admin_employee_category' %}"><span class="fa fa-ellipsis-v"></span>Employee Category</a></li>                         
+                            <li><a href="{% url 'admin_subject_manage' %}"><span class="fa fa-book"></span>Subject</a></li>                         
                         </ul>
                
                     </li>
-                    
+                    <li class="xn-openable">
+                        <a href="#"><span class="fa fa-files-o"></span> <span class="xn-text">Employee</span></a>
+                        <ul>
+                            <li><a href="{% url 'admin_employee_add'%}"><span class="glyphicon glyphicon-user"></span>Add_Employee</a></li>
+                                                 
+                        </ul>
+               
+                    </li>
                     
                 </ul>
                 <!-- END X-NAVIGATION -->
