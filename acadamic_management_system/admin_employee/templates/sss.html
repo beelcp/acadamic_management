@@ -1,790 +1,275 @@
-function delete_class(id) {
-    var box = $("#mb-remove-row");
-    box.addClass("open");
+{% extends "base.html" %}
+{% block content %}
+<!-- START BREADCRUMB -->
+<ul class="breadcrumb">
+    <li><a href="#">Master</a></li>                    
+    <li class="active">Manage Class</li>
+</ul>
+<!-- END BREADCRUMB -->  
+<div class="content-frame-top">                        
+    <div class="page-title">                    
+        <h2><span class="fa fa-arrow-circle-o-left"></span> Employee Registration</h2>
+    </div>                                      
+    
 
-    function delete_contact(id) {
-        var request_url = document.getElementById('deleteurl').value;
-
-        $.ajax({
-            type: "get",
-            url: request_url,
-            data: { "id": id },
-            dataType: 'json',
-            success: function (data) {
-                console.log(data);
-            },
-            error: function (data) {
-                console.log(data, "error");
-            },
-        });
-    }
-
-    // Unbind the click event to avoid multiple bindings
-    box.find(".mb-control-yes").off("click").on("click", function () {
-        delete_contact(id);
-        box.removeClass("open");
-        $("#"+id).hide("slow",function(){
-            $(this).remove();
-        });
-    });
-}
+    
+</div>
 
 
 
-function edit_pop(classId){
-    document.getElementById('spinner'+classId).className="fa fa-spinner";
-    reqest_url =document.getElementById('url').value
-    $.ajax({
-        type:"get",
-        url:reqest_url,
-        data: { 'class_id': classId },
-        dataType: 'json',
-        success: function (data) {
-            document.getElementById('editclass').value=data.name;
 
-            document.getElementById('classid').value=data.id;
-            document.getElementById('editSelect').value=data.select;
+<form class="form-horizontal">
+    <div class="panel panel-default">
+        
+        
+        <div class="panel-body">    
+            <div class="form-group">
+                <label class="col-md-3 col-xs-12 control-label">First Name</label>
+                <div class="col-md-6 col-xs-12">                                            
+                    <div class="input-group">
+                        <span class="input-group-addon"><span class="fa fa-pencil"></span></span>
+                        <input type="text" class="form-control" name="firstname"/>
+                    </div>                                            
+                    <span class="help-block">Enter your full name</span>
+                </div>
+            </div>     
             
-            $('#modal-default').modal('show');
-            document.getElementById('spinner'+classId).className="fa fa-pencil";
-
+            <div class="form-group">                                        
+                <label class="col-md-3 col-xs-12 control-label">Last Name</label>
+                <div class="col-md-6 col-xs-12">
+                    <div class="input-group">
+                        <span class="input-group-addon"><span class="fa fa-unlock-alt"></span></span>
+                        <input type="text" class="form-control" name="lastname"/>
+                    </div>            
+                    <span class="help-block">Enter your last name</span>
+                </div>
+            </div>
             
-        },
-        error: function (data) {
-            console.log(data, "error");
-        },
-    });
-}
-
-
-function edit_contact(){
-    reqest_url =document.getElementById('contacturl').value
-
-    updateId=document.getElementById('classid').value;
-    updateClass=document.getElementById('editclass').value;
-    updateStatus=document.getElementById('editSelect').value
-    console.log(typeof(updateStatus));
-
-    updateObject = {
-        "updateId": updateId,
-        "updateClass": updateClass,
-        "updateStatus": updateStatus
-      };
-    
-    $.ajax({
-        type:"get",
-        url:reqest_url,
-        data:updateObject,
-        dataType: 'json',
-        success: function (data) {
-            $('#modal-default').modal('hide');
-            if(data.errormessage){
-                noty({ text: data.errormessage, layout: 'topRight', timeout: 1000, type: 'error' }).show();
-            setTimeout(function () {
-                // location.reload();
-            }, 3000);
-            }
-            if(data.successmessage){
-                noty({ text: data.successmessage, layout: 'topRight', timeout: 1000, type: 'success' }).show();
-            setTimeout(function () {
-                location.reload();
-            }, 3000);
-
-            }
-            
-                
-
-            
-        },
-        error: function (data) {
-            console.log(data, "error");
-        },
-    });
-}
-
-
-
-//Department
-
-
-function edit_pop_department(departmentId){
-    document.getElementById('spinner'+departmentId).className="fa fa-spinner";
-    reqest_url =document.getElementById('url').value;
-    $.ajax({
-        type:"get",
-        url:reqest_url,
-        data: { 'department_id': departmentId },
-        dataType: 'json',
-        success: function (data) {
-            document.getElementById('edit_name').value=data.name;
-            document.getElementById('edit_code').value=data.code;
-
-            document.getElementById('edit_id').value=data.id;
-            document.getElementById('edit_select').value=data.select;
-            
-            $('#modal-default').modal('show');
-            document.getElementById('spinner'+departmentId).className="fa fa-pencil";
-
-            
-        },
-        error: function (data) {
-            console.log(data, "error");
-        },
-    });
-}
-
-
-function edit_department(){
-    reqest_url =document.getElementById('updateurl').value
-
-    updateId=document.getElementById('edit_id').value;
-    updateName=document.getElementById('edit_name').value;
-    updateCode=document.getElementById('edit_code').value;
-    updateStatus=document.getElementById('edit_select').value
-    updateObject = {
-        "updateId": updateId,
-        "updateName": updateName,
-        "updateStatus": updateStatus,
-        "updateCode":updateCode
-      };
-    
-    $.ajax({
-        type:"get",
-        url:reqest_url,
-        data:updateObject,
-        dataType: 'json',
-        success: function (data) {
-            $('#modal-default').modal('hide');
-            if(data.errormessage){
-                noty({ text: data.errormessage, layout: 'topRight', timeout: 1000, type: 'error' }).show();
-            setTimeout(function () {
-                // location.reload();
-            }, 3000);
-            }
-            if(data.successmessage){
-                noty({ text: data.successmessage, layout: 'topRight', timeout: 1000, type: 'success' }).show();
-            setTimeout(function () {
-                location.reload();
-            }, 3000);
-
-            }
-            
-                
-
-            
-        },
-        error: function (data) {
-            console.log(data, "error");
-        },
-    });
-}
-
-
-function delete_department(id) {
-    var box = $("#mb-remove-row");
-    box.addClass("open");
-
-
-    var request_url = document.getElementById('deleteurl').value;
-
-    $.ajax({
-            type: "get",
-            url: request_url,
-            data: { "id": id },
-            dataType: 'json',
-            success: function (data) {
-                box.find(".mb-control-yes").off("click").on("click", function () {
-                    box.removeClass("open");
-                    $("#"+id).hide("slow",function(){
-                        $(this).remove();
-                    });
-                });
-
-            },
-            error: function (data) {
-                console.log(data, "error");
-            },
-        });
-
-
-    }
-
-    
-// Designation
-
-function edit_pop_designation(designationId){
-    document.getElementById('spinner'+designationId).className="fa fa-spinner";
-    reqest_url =document.getElementById('url').value;
-    $.ajax({
-        type:"get",
-        url:reqest_url,
-        data: { 'designation_id': designationId },
-        dataType: 'json',
-        success: function (data) {
-            document.getElementById('edit_name').value=data.name;
-            document.getElementById('edit_code').value=data.code;
-
-            document.getElementById('edit_id').value=data.id;
-            document.getElementById('edit_select').value=data.select;
-            
-            $('#modal-default').modal('show');
-            document.getElementById('spinner'+designationId).className="fa fa-pencil";
-
-            
-        },
-        error: function (data) {
-            console.log(data, "error");
-        },
-    });
-}
-
-
-
-function edit_designation(){
-    reqest_url =document.getElementById('updateurl').value
-
-    updateId=document.getElementById('edit_id').value;
-    updateName=document.getElementById('edit_name').value;
-    updateCode=document.getElementById('edit_code').value;
-    updateStatus=document.getElementById('edit_select').value
-    updateObject = {
-        "updateId": updateId,
-        "updateName": updateName,
-        "updateStatus": updateStatus,
-        "updateCode":updateCode
-      };
-    
-    $.ajax({
-        type:"get",
-        url:reqest_url,
-        data:updateObject,
-        dataType: 'json',
-        success: function (data) {
-            $('#modal-default').modal('hide');
-            if(data.errormessage){
-                noty({ text: data.errormessage, layout: 'topRight', timeout: 1000, type: 'error' }).show();
-            setTimeout(function () {
-                // location.reload();
-            }, 3000);
-            }
-            if(data.successmessage){
-                noty({ text: data.successmessage, layout: 'topRight', timeout: 1000, type: 'success' }).show();
-            setTimeout(function () {
-                location.reload();
-            }, 3000);
-
-            }
-            
-                
-
-            
-        },
-        error: function (data) {
-            console.log(data, "error");
-        },
-    });
-}
-
-
-
-function delete_designation(id) {
-    var box = $("#mb-remove-row");
-    box.addClass("open");
-
-
-    var request_url = document.getElementById('deleteurl').value;
-
-    $.ajax({
-            type: "get",
-            url: request_url,
-            data: { "id": id },
-            dataType: 'json',
-            success: function (data) {
-                box.find(".mb-control-yes").off("click").on("click", function () {
-                    box.removeClass("open");
-                    $("#"+id).hide("slow",function(){
-                        $(this).remove();
-                    });
-                });
-
-            },
-            error: function (data) {
-                console.log(data, "error");
-            },
-        });
-
-
-    }
-
-
-    //Qualification
-
-    function delete_qualification(id) {
-        var box = $("#mb-remove-row");
-        box.addClass("open");
-        var request_url = document.getElementById('deleteurl').value;
-    
-            $.ajax({
-                type: "get",
-                url: request_url,
-                data: { "id": id },
-                dataType: 'json',
-                success: function (data) {
-                    box.find(".mb-control-yes").off("click").on("click", function () {
-                        box.removeClass("open");
-                        $("#"+id).hide("slow",function(){
-                            $(this).remove();
-                        });
-                    });
-                },
-                error: function (data) {
-                    console.log(data, "error");
-                },
-            });
-        
-    
-
-       
-    }
-    
-    
-    
-    function edit_pop_qualification(qualificationId){
-        document.getElementById('spinner'+qualificationId).className="fa fa-spinner";
-        reqest_url =document.getElementById('url').value
-        $.ajax({
-            type:"get",
-            url:reqest_url,
-            data: { 'qualification_id': qualificationId },
-            dataType: 'json',
-            success: function (data) {
-                document.getElementById('edit_name').value=data.name;
-    
-                document.getElementById('edit_id').value=data.id;
-                document.getElementById('edit_select').value=data.select;
-                
-                $('#modal-default').modal('show');
-                document.getElementById('spinner'+qualificationId).className="fa fa-pencil";
-    
-                
-            },
-            error: function (data) {
-                console.log(data, "error");
-            },
-        });
-    }
-    
-    
-    function edit_qualification(){
-        reqest_url =document.getElementById('contacturl').value
-    
-        updateId=document.getElementById('edit_id').value;
-        updateName=document.getElementById('edit_name').value;
-        updateStatus=document.getElementById('edit_select').value
-
-        updateObject = {
-            "updateId": updateId,
-            "updateName": updateName,
-            "updateStatus": updateStatus
-          };
-        
-        $.ajax({
-            type:"get",
-            url:reqest_url,
-            data:updateObject,
-            dataType: 'json',
-            success: function (data) {
-                $('#modal-default').modal('hide');
-                if(data.errormessage){
-                    noty({ text: data.errormessage, layout: 'topRight', timeout: 1000, type: 'error' }).show();
-                setTimeout(function () {
-                    // location.reload();
-                }, 3000);
-                }
-                if(data.successmessage){
-                    noty({ text: data.successmessage, layout: 'topRight', timeout: 1000, type: 'success' }).show();
-                setTimeout(function () {
-                    location.reload();
-                }, 3000);
-    
-                }
-                
-                    
-    
-                
-            },
-            error: function (data) {
-                console.log(data, "error");
-            },
-        });
-    }
-    
-
-        //division
-
-        function delete_division(id) {
-            var box = $("#mb-remove-row");
-            box.addClass("open");
-            var request_url = document.getElementById('deleteurl').value;
-        
-                $.ajax({
-                    type: "get",
-                    url: request_url,
-                    data: { "id": id },
-                    dataType: 'json',
-                    success: function (data) {
-                        box.find(".mb-control-yes").off("click").on("click", function () {
-                            box.removeClass("open");
-                            $("#"+id).hide("slow",function(){
-                                $(this).remove();
-                            });
-                        });
-                    },
-                    error: function (data) {
-                        console.log(data, "error");
-                    },
-                });
-            
-        
-    
-           
-        }
-        
-        
-        
-        function edit_pop_division(divisionId){
-            document.getElementById('spinner'+divisionId).className="fa fa-spinner";
-            reqest_url=document.getElementById('url').value
-            $.ajax({
-                type:"get",
-                url:reqest_url,
-                data: { 'division_id': divisionId },
-                dataType: 'json',
-                success: function (data) {
-                    document.getElementById('edit_name').value=data.name;
-        
-                    document.getElementById('edit_id').value=data.id;
-                    document.getElementById('edit_select').value=data.select;
-                    
-                    $('#modal-default').modal('show');
-                    document.getElementById('spinner'+divisionId).className="fa fa-pencil";
-        
-                    
-                },
-                error: function (data) {
-                    console.log(data, "error");
-                },
-            });
-        }
-        
-        
-        function edit_division(){
-            reqest_url =document.getElementById('contacturl').value
-        
-            updateId=document.getElementById('edit_id').value;
-            updateName=document.getElementById('edit_name').value;
-            updateStatus=document.getElementById('edit_select').value
-    
-            updateObject = {
-                "updateId": updateId,
-                "updateName": updateName,
-                "updateStatus": updateStatus
-              };
-            
-            $.ajax({
-                type:"get",
-                url:reqest_url,
-                data:updateObject,
-                dataType: 'json',
-                success: function (data) {
-                    $('#modal-default').modal('hide');
-                    if(data.errormessage){
-                        noty({ text: data.errormessage, layout: 'topRight', timeout: 1000, type: 'error' }).show();
-                    setTimeout(function () {
-                       
-                    }, 3000);
-                    }
-                    if(data.successmessage){
-                        noty({ text: data.successmessage, layout: 'topRight', timeout: 1000, type: 'success' }).show();
-                    setTimeout(function () {
-                        location.reload();
-                    }, 3000);
-        
-                    }
-                    
-                        
-        
-                    
-                },
-                error: function (data) {
-                    console.log(data, "error");
-                },
-            });
-        }
-
-
-        // employee_category_manage
-
-
-
-        function delete_employee_category(id) {
-            var box = $("#mb-remove-row");
-            box.addClass("open");
-            var request_url = document.getElementById('deleteurl').value;
-        
-                $.ajax({
-                    type: "get",
-                    url: request_url,
-                    data: { "id": id },
-                    dataType: 'json',
-                    success: function (data) {
-                        box.find(".mb-control-yes").off("click").on("click", function () {
-                            box.removeClass("open");
-                            $("#"+id).hide("slow",function(){
-                                $(this).remove();
-                            });
-                        });
-                    },
-                    error: function (data) {
-                        console.log(data, "error");
-                    },
-                });
-            
-        
-    
-           
-        }
-        
-        
-        
-        function edit_pop_employee_category(employeeCategoryId){
-            document.getElementById('spinner'+employeeCategoryId).className="fa fa-spinner";
-            reqest_url=document.getElementById('url').value
-            $.ajax({
-                type:"get",
-                url:reqest_url,
-                data: { 'employee_category_id': employeeCategoryId },
-                dataType: 'json',
-                success: function (data) {
-                    document.getElementById('edit_name').value=data.name;
-                    document.getElementById('edit_area').value=data.area;
-                    document.getElementById('edit_id').value=data.id;
-                    
-                    document.getElementById('edit_select').value=data.select;
-                    
-                    $('#modal-default').modal('show');
-                    document.getElementById('spinner'+employeeCategoryId).className="fa fa-pencil";
-        
-                    
-                },
-                error: function (data) {
-                    console.log(data, "error");
-                },
-            });
-        }
-        
-        
-        function edit_employee_category(){
-            reqest_url =document.getElementById('contacturl').value
-        
-            updateId=document.getElementById('edit_id').value;
-            updateArea=document.getElementById('edit_area').value;
-            updateName=document.getElementById('edit_name').value;
-            updateStatus=document.getElementById('edit_select').value
-    
-            updateObject = {
-                "updateId": updateId,
-                "updateName": updateName,
-                "updateStatus": updateStatus,
-                "updateArea":updateArea
-              };
-            
-            $.ajax({
-                type:"get",
-                url:reqest_url,
-                data:updateObject,
-                dataType: 'json',
-                success: function (data) {
-                    $('#modal-default').modal('hide');
-                    if(data.errormessage){
-                        noty({ text: data.errormessage, layout: 'topRight', timeout: 1000, type: 'error' }).show();
-                    setTimeout(function () {
-                       
-                    }, 3000);
-                    }
-                    if(data.successmessage){
-                        noty({ text: data.successmessage, layout: 'topRight', timeout: 1000, type: 'success' }).show();
-                    setTimeout(function () {
-                        location.reload();
-                    }, 3000);
-        
-                    }
-                    
-                        
-        
-                    
-                },
-                error: function (data) {
-                    console.log(data, "error");
-                },
-            });
-        }
-
-
-
-//Subject
-function checkAll() {
-    var selectAllCheckbox = document.getElementById("selectAllCheckbox");
-    var classCheckboxes = document.querySelectorAll('.classCheckbox');
-    
- classCheckboxes.forEach(function (checkbox) {
-
-    checkbox.checked = selectAllCheckbox.checked;
-});
-}
-
-function edit_pop_subject(subjectId){
-    document.getElementById('spinner'+subjectId).className="fa fa-spinner";
-    reqest_url=document.getElementById('url').value
-    $.ajax({
-        type:"get",
-        url:reqest_url,
-        data: { 'subject_id': subjectId },
-        dataType: 'json',
-        success: function (data) {
-            document.getElementById('edit_name').value=data.name;
-            document.getElementById('edit_id').value=data.id;
-            
-            document.getElementById('edit_select').value=data.select;
-
-            var container = document.getElementById('checkboxContainer');
-            container.innerHTML = '';
-            
-
-            function createCheckbox(id, name, isChecked) {
-                return `
-                    <div class="checkbox">
-                        <label>
-                            <input type="checkbox" id="${id}" name="classes" value="${id}" class="classCheckbox" ${isChecked ? 'checked' : ''} />
-                            Class ${name}
-                        </label>
+            <div class="form-group">
+                <label class="col-md-3 col-xs-12 control-label">Address</label>
+                <div class="col-md-6 col-xs-12">                                            
+                    <textarea class="form-control" rows="5" name="address"></textarea>
+                    <span class="help-block">Enter your address</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-md-3 col-xs-12 control-label">Date of Birth</label>
+                <div class="col-md-6 col-xs-12">
+                    <div class="input-group">
+                        <span class="input-group-addon"><span class="fa fa-calendar"></span></span>
+                        <input type="text" class="form-control datepicker" name="dateofbirth" value="2014-11-01">                                            
                     </div>
-                `;
-            }
+                    <span class="help-block">Select your date of birth</span>
+                </div>
+            </div>
 
-            data.classes.forEach(function(item) {
-                container.innerHTML += createCheckbox(item.id, item.class_name, true);
-            });
+            <div class="form-group">
+                <label class="col-md-3 col-xs-12 control-label">Gender</label>
+                <div class="col-md-6 col-xs-12">                                            
+                    <label class="check"><input type="radio" class="iradio" name="gender" value="male"/> Male</label>
+                    <label class="check"><input type="radio" class="iradio" name="gender" value="female"/> Female</label>
+                    <span class="help-block">Select your gender</span>
+                </div>
+            </div>
 
-            data.other_classes.forEach(function(item) {
-                container.innerHTML += createCheckbox(item.id, item.class_name, false);
-            });
-            
-            
-            // data.classes.forEach(function (classObj) {
-            //     document.getElementById('edit_class_' + classObj.id).checked = true;
-            // });
-            
-            $('#modal-default').modal('show');
-            document.getElementById('spinner'+subjectId).className="fa fa-pencil";
+            <div class="form-group">
+                <label class="col-md-3 col-xs-12 control-label">Email</label>
+                <div class="col-md-6 col-xs-12">                                            
+                    <div class="input-group">
+                        <span class="input-group-addon"><span class="fa fa-envelope"></span></span>
+                        <input type="text" class="form-control" name="email"/>
+                    </div>                                            
+                    <span class="help-block">Enter your email address</span>
+                </div>
+            </div>
 
-            
-        },
-        error: function (data) {
-            console.log(data, "error");
-        },
-    });
-}
+           
 
-function edit_subject(){
-    reqest_url =document.getElementById('contacturl').value
-   
+           
 
-    updateId=document.getElementById('edit_id').value;
-    updateName=document.getElementById('edit_name').value;
-    var selectedClassIds = [];
-    $('input[name="classes"]:checked').each(function () {
-        selectedClassIds.push($(this).val());
-    });
+            <div class="form-group">
+                <label class="col-md-3 col-xs-12 control-label">Phone</label>
+                <div class="col-md-6 col-xs-12">                                            
+                    <div class="input-group">
+                        <span class="input-group-addon"><span class="fa fa-phone"></span></span>
+                        <input type="text" class="form-control" name="phone"/>
+                    </div>                                            
+                    <span class="help-block">Enter your phone number</span>
+                </div>
+            </div>
 
-    updateStatus=document.getElementById('edit_select').value
-    var classIdsString = selectedClassIds.join(',');
-    console.log(selectedClassIds);
-    updateObject = {
-        "updateId": updateId,
-        "updateName": updateName,
-        "updateStatus": updateStatus,
-        "selectedClassIds":classIdsString
-      };
-      console.log(updateObject);
-    
-    $.ajax({
-        type:"get",
-        url:reqest_url,
-        data:updateObject,
-        dataType: 'json',
-        success: function (data) {
-            $('#modal-default').modal('hide');
-            if(data.errormessage){
-                noty({ text: data.errormessage, layout: 'topRight', timeout: 1000, type: 'error' }).show();
-            setTimeout(function () {
-               
-            }, 3000);
-            }
-            if(data.successmessage){
-                noty({ text: data.successmessage, layout: 'topRight', timeout: 1000, type: 'success' }).show();
-            setTimeout(function () {
-                location.reload();
-            }, 3000);
+            <div class="form-group">
+                <label class="col-md-3 col-xs-12 control-label">Qualification</label>
+                <div class="col-md-6 col-xs-12">                                            
+                    <select class="form-control" name="qualification">
+                        {% for emp in empl_qal %}
+                            <option value="{{ emp.id }}">{{ emp.qualification_name }}</option>
+                        {% endfor %}
+                    </select>
+                    <span class="help-block">Select your qualification</span>
+                </div>
+            </div>
 
-            }
-            
-                
+            <!-- Fields on the Left -->
 
-            
-        },
-        error: function (data) {
-            console.log(data, "error");
-        },
-    });
-
-} 
-
-function edit_view_subject(subjectId){
-    // document.getElementById('spinner'+subjectId).className="fa fa-spinner";
-    reqest_url=document.getElementById('viewurl').value
-    console.log(reqest_url);
-    $.ajax({
-        type:"get",
-        url:reqest_url,
-        data: { 'subject_id': subjectId },
-        dataType: 'json',
-        success: function (data) {
-            console.log(data);
-            document.getElementById('viewsubject').innerHTML=data.name;
-            document.getElementById('viewselect').innerHTML=data.select;
-            var container = document.getElementById('licontiner');
-            container.innerHTML = '';
-            
-
-            function createCheckbox(id, name, isChecked) {
-                return `
-                    <li> <span id="classes">class ${name}</span></li>`;
-            }
-
-            data.classes.forEach(function(item) {
-                container.innerHTML += createCheckbox(item.id, item.class_name, true);
-            });
-
-          
            
             
-            $('#modal-default1').modal('show');
+           
 
+            <div class="form-group">
+                <label class="col-md-3 col-xs-12 control-label">Designation</label>
+                <div class="col-md-6 col-xs-12">                                            
+                    <select class="form-control" name="designation">
+                        {% for employee in employee_des %}
+                            <option value="{{employee.designation_id }}">{{ employee.designation_name}}</option>
+                        {% endfor %}
+                    </select>
+                    <span class="help-block">Select your designation</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-md-3 col-xs-12 control-label">Employee Category</label>
+                <div class="col-md-6 col-xs-12">                                            
+                    <select class="form-control" name="employeecategory" id="employee_category_id" onchange="drop()">
+                        {% for emp in employee_cat %}
+                            <option value="{{ emp.employee_category_area}}">{{ emp.employee_category_name }}</option>
+                        {% endfor %}
+                    </select>
+                    <span class="help-block">Select your employee category</span>
+                </div>
+            </div>
             
-        },
-        error: function (data) {
-            console.log(data, "error");
-        },
-    });
-}
+
+            <div class="form-group">                                        
+                <label class="col-md-3 col-xs-12 control-label">Joining Date</label>
+                <div class="col-md-6 col-xs-12">
+                    <div class="input-group">
+                        <span class="input-group-addon"><span class="fa fa-calendar"></span></span>
+                        <input type="text" class="form-control datepicker" name="joiningdate" value="2014-11-01">                                            
+                    </div>
+                    <span class="help-block">Select your joining date</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-md-3 col-xs-12 control-label">Department</label>
+                <div class="col-md-6 col-xs-12">                                            
+                    <select class="form-control" name="department">
+                        {% for emp in employee_dep %}
+                            <option value="{{ emp.id }}">{{ emp.department_name }}</option>
+                        {% endfor %}
+                    </select>
+                    <span class="help-block">Select your department</span>
+                </div>
+            </div>
+            
+
+            <div class="form-group">
+                <label class="col-md-3 col-xs-12 control-label">Salary Amount</label>
+                <div class="col-md-6 col-xs-12">                                            
+                    <div class="input-group">
+                        <span class="input-group-addon"><span class="fa fa-money"></span></span>
+                        <input type="text" class="form-control" name="salaryamount"/>
+                    </div>                                            
+                    <span class="help-block">Enter your salary amount</span>
+                </div>
+            </div>
+           
+         <div class="row" id="drop" style="display:none;">
+          <div class="panel panel-default">
+            <div class="form-group">
+                <label class="col-md-3 col-xs-12 control-label">class</label>
+                <div class="col-md-6 col-xs-12">                                            
+                    <select class="form-control" name="class" id="class" >
+                        {% for emp in employee_class %}
+                            <option value="{{ emp.id }}">{{ emp.class_name }}</option>
+                        {% endfor %}
+                    </select>
+                    <span class="help-block">Select your class</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-md-3 col-xs-12 control-label">Division</label>
+                <div class="col-md-6 col-xs-12">                                            
+                    <select class="form-control" name="division">
+                        {% for emp in employee_division %}
+                            <option value="{{ emp.id }}">{{ emp.division_name }}</option>
+                        {% endfor %}
+                    </select>
+                    <span class="help-block">Select your division</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-md-3 col-xs-12 control-label">Subject</label>
+                <div class="col-md-6 col-xs-12">                                            
+                    <select class="form-control" name="subject">
+                        {% for emp in employee_subject %}
+                            <option value="{{ emp.id }}">{{ emp.subject_name }}</option>
+                        {% endfor %}
+                    </select>
+                    <span class="help-block">Select your subject</span>
+                </div>
+            </div>
+            <button class="btn btn-primary pull-right" onclick="addData()">Add</button>
+
+
+        </div></div>
+
+        
+
+        </div>
+        <div class="panel-footer">
+            <button class="btn btn-default">Clear Form</button>                                    
+            <button class="btn btn-primary pull-right">Submit</button>
+        </div>
+
+
+
+    </div>
+</form>
+
+
+
+{% comment %} <input type="hidden" value="{{ request.scheme }}://{{ request.get_host }}/ajax_class_view" id="url_name">
+<input type="hidden" value="{{ request.scheme }}://{{ request.get_host }}/ajax_class_update" id="url_update">
+<input type="hidden" value="{{ request.scheme }}://{{ request.get_host }}/ajax_delete_class_row" id="url_delete"> {% endcomment %}
+
+<!-- MESSAGE BOX-->
+<div class="message-box animated fadeIn" data-sound="alert" id="mb-remove-row">
+    <div class="mb-container">
+        <div class="mb-middle">
+            <div class="mb-title"><span class="fa fa-times"></span> Remove <strong>Data</strong> ?</div>
+            <div class="mb-content">
+                <p>Are you sure you want to remove this row?</p>                    
+                <p>Press Yes if you sure.</p>
+            </div>
+            <div class="mb-footer">
+                <div class="pull-right">
+                    <button class="btn btn-success btn-lg mb-control-yes">Yes</button>
+                    <button class="btn btn-default btn-lg mb-control-close">No</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END MESSAGE BOX-->    
+   
+{% endblock content %}
+
+<table class="table" id="dataTable">
+    <thead>
+        <tr>
+            <th>Class</th>
+            <th>Division</th>
+            <th>Subject</th>
+        </tr>
+    </thead>
+    <tbody id="dataBody">
+        <!-- Data will be added here dynamically -->
+    </tbody>
+</table>
+

@@ -126,7 +126,7 @@
                         </thead>
                         <tbody> 
                             {% for Subject in subjects %}
-                            <tr >
+                            <tr id="{{Subject.id}}" >
                                 <td>{{ forloop.counter }}</td>
                                 <td>{{ Subject.subject_name }}</td>
                                 <td>
@@ -156,6 +156,46 @@
                         {% endfor %}
                         </tbody>
                     </table>
+                </div>
+                <div class="modal" id="modal_basic" tabindex="-1" role="dialog" aria-labelledby="defModalHead" aria-hidden="true" style="display: none;">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true"></span>×<span class="sr-only">Close</span></button>
+                                <h4 class="modal-title" id="defModalHead">Edit Class</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                <div class="col-md-6">
+                                    <input type="text" placeholder="Subject Name" id="subject_name"class="form-control">
+                                </div>
+                                <div class="col-md-6">
+                                    <select class="form-control" data-live-search="true" id="status">
+                                        <option value="1">Active</option>
+                                        <option value="0">Deactive</option>
+                                        
+                                    </select>
+                                </div><br></br>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <input type="text" placeholder="Class Name" id="class_name" class="form-control">
+                                        </div>
+            
+                            </div>
+                        </div>
+                       
+            
+                                <div class="panel-footer">
+                                    <button class="btn btn-default" data-dismiss="modal">Close</button>                                    
+                                    <button class="btn btn-primary pull-right" onclick="update_subject_row()">Update</button>
+                                    <input type="hidden" class="form-control" id="subject_id">
+                                    
+                                </div>
+                                
+                            
+                        </div>
+                    </div>
                 </div>
             </div>
             <input type="hidden" value="{{ request.scheme }}://{{ request.get_host }}/ajax_subject_view" id="url_name">

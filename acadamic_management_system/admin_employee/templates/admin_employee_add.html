@@ -17,8 +17,7 @@
 
 
 
-
-<form class="form-horizontal">
+<div class="form-horizontal">
     <div class="panel panel-default">
         
         
@@ -132,7 +131,7 @@
             <div class="form-group">
                 <label class="col-md-3 col-xs-12 control-label">Employee Category</label>
                 <div class="col-md-6 col-xs-12">                                            
-                    <select class="form-control" name="employeecategory">
+                    <select class="form-control" name="employeecategory" id="employee_category_id" onchange="drop()">
                         {% for emp in employee_cat %}
                             <option value="{{ emp.employee_category_area}}">{{ emp.employee_category_name }}</option>
                         {% endfor %}
@@ -176,14 +175,82 @@
                     <span class="help-block">Enter your salary amount</span>
                 </div>
             </div>
+           
+         <div class="row" id="drop" style="display:none;">
+          <div class="panel panel-default">
+            <div class="form-group">
+                <label class="col-md-3 col-xs-12 control-label">class</label>
+                <div class="col-md-6 col-xs-12">                                            
+                    <select class="form-control" name="class" id="class" onchange="updateSubjects()">
+                        {% for emp in employee_class %}
+                            <option value="{{ emp.id }}">{{ emp.class_name }}</option>
+                        {% endfor %}
+                    </select>
+                    <span class="help-block">Select your class</span>
+                </div>
+                <input type="hidden" value="{{ request.scheme }}://{{ request.get_host }}/get_subjects" id="url_sub">
+
+            </div>
+
+            <div class="form-group">
+                <label class="col-md-3 col-xs-12 control-label">Division</label>
+                <div class="col-md-6 col-xs-12">                                            
+                    <select class="form-control"id="division" name="division">
+                        {% for emp in employee_division %}
+                            <option value="{{ emp.id }}">{{ emp.division_name }}</option>
+                        {% endfor %}
+                    </select>
+                    <span class="help-block">Select your division</span>
+                </div>
+
+            </div>
+
+            <div class="form-group">
+                <label class="col-md-3 col-xs-12 control-label">Subject</label>
+                <div class="col-md-6 col-xs-12">                                            
+                    <select class="form-control" id="subject"name="subject">
+                        {% comment %} {% for emp in employee_subject %}
+                            <option value="{{ emp.id }}">{{ emp.subject_name }}</option>
+                        {% endfor %} {% endcomment %}
+                    </select>
+                    <span class="help-block">Select your subject</span>
+                </div>
+            </div>
+            <table class="table datatable dataTable no-footer" id="dataTables" role="grid" aria-describedby="DataTables_Table_0_info">
+
+                <thead>
+                    <tr role="row">
+                    <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Position: activate to sort column ascending" style="width: 70px;">Class</th>
+                    <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Age: activate to sort column ascending" style="width: 70px;">Division</th>
+                    <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Age: activate to sort column ascending" style="width: 70px;">Subject</th>
+
+                    <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Start date: activate to sort column ascending" style="width: 137px;">Action</th>
+                </tr>
+                </thead>
+                <tbody id="dataBody">
+                    <!-- Data will be added here dynamically -->
+                </tbody>
+                
+            </table>
+
+            <button class="btn btn-primary pull-right" onclick="addRow();">Add</button>
+
+            
+
+        </div></div>
+
+        
 
         </div>
         <div class="panel-footer">
             <button class="btn btn-default">Clear Form</button>                                    
             <button class="btn btn-primary pull-right">Submit</button>
         </div>
+
+
+
     </div>
-</form>
+
 
 
 
@@ -209,6 +276,10 @@
         </div>
     </div>
 </div>
+
+
 <!-- END MESSAGE BOX-->    
    
 {% endblock content %}
+
+

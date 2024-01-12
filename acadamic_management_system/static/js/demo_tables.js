@@ -244,7 +244,7 @@ function edit_subject_row(id) {
         var box = $("#mb-remove-row");
         box.addClass("open");
     
-        box.find(".mb-control-yes").on("click", function () {
+        box.find(".mb-control-yes").off("click").on("click", function () {
             box.removeClass("open");
     
             // Assuming you're using AJAX to send a POST request to the Django view
@@ -278,7 +278,7 @@ function edit_subject_row(id) {
         var box = $("#mb-remove-row");
         box.addClass("open");
     
-        box.find(".mb-control-yes").on("click", function () {
+        box.find(".mb-control-yes").off("click").on("click", function () {
             box.removeClass("open");
     
             // Assuming you're using AJAX to send a POST request to the Django view
@@ -312,7 +312,7 @@ function edit_subject_row(id) {
         var box = $("#mb-remove-row");
         box.addClass("open");
     
-        box.find(".mb-control-yes").on("click", function () {
+        box.find(".mb-control-yes").off("click").on("click", function () {
             box.removeClass("open");
     
             // Assuming you're using AJAX to send a POST request to the Django view
@@ -345,7 +345,7 @@ function edit_subject_row(id) {
         var box = $("#mb-remove-row");
         box.addClass("open");
     
-        box.find(".mb-control-yes").on("click", function () {
+        box.find(".mb-control-yes").off("click").on("click", function () {
             box.removeClass("open");
     
             // Assuming you're using AJAX to send a POST request to the Django view
@@ -377,7 +377,7 @@ function edit_subject_row(id) {
         var box = $("#mb-remove-row");
         box.addClass("open");
     
-        box.find(".mb-control-yes").on("click", function () {
+        box.find(".mb-control-yes").off("click").on("click", function () {
             box.removeClass("open");
     
             // Assuming you're using AJAX to send a GET request to the Django view
@@ -410,7 +410,7 @@ function edit_subject_row(id) {
         var box = $("#mb-remove-row");
         box.addClass("open");
     
-        box.find(".mb-control-yes").on("click", function () {
+        box.find(".mb-control-yes").off("click").on("click", function () {
             box.removeClass("open");
     
             // Assuming you're using AJAX to send a POST request to the Django view
@@ -443,7 +443,7 @@ function delete_subject_row(id) {
     var box = $("#mb-remove-row");
     box.addClass("open");
 
-    box.find(".mb-control-yes").on("click", function () {
+    box.find(".mb-control-yes").off("click").on("click", function () {
         box.removeClass("open");
 
         // Assuming you're using AJAX to send a POST request to the Django view
@@ -711,6 +711,7 @@ function update_subject_row() {
     var id = document.getElementById("subject_id").value;
     var subject_name = document.getElementById("subject_name").value;
     var status = document.getElementById("status").value;
+    var class_name = document.getElementById("class_name").value;
 
     // Show loading indicator
     $("#loading_indicator").show();
@@ -721,8 +722,9 @@ function update_subject_row() {
         data: {
             'id': id,
             'subject_name': subject_name,
-            'subject_area': subject_area,  // Include subject area in the data sent to the server
-            'status': status
+            // 'subject_area': subject_area,  // Include subject area in the data sent to the server
+            'status': status,
+            'class_name':class_name
         },
         dataType: "json",
         success: function (data) {
@@ -753,4 +755,169 @@ function checkAll() {
 
     checkbox.checked = selectAllCheckbox.checked;
 });
+}
+
+
+function drop() {
+    var employee_category = document.getElementById("employee_category_id");
+    var drop = document.getElementById('drop');
+    
+    if (employee_category.value === '2') {
+        drop.style.display = "block";
+    } else {
+        drop.style.display = "none";
+    }
+}
+
+
+
+
+
+function addRowww() {
+    var classInput = document.getElementsByName('class')[0].options[document.getElementsByName('class')[0].selectedIndex].text;
+    var divisionInput = document.getElementsByName('division')[0].options[document.getElementsByName('division')[0].selectedIndex].text;
+    var subjectInput = document.getElementsByName('subject')[0].options[document.getElementsByName('subject')[0].selectedIndex].text;
+
+    var tableBody = document.getElementById('dataBody');
+    var row = tableBody.insertRow();
+    var cell1 = row.insertCell(0);
+    var cell2 = row.insertCell(1);
+    var cell3 = row.insertCell(2);
+    var cell4 = row.insertCell(3);
+
+    cell1.innerHTML = classInput;
+    cell2.innerHTML = divisionInput;
+    cell3.innerHTML = subjectInput;
+    cell4.innerHTML = '<button class="btn btn-danger" onclick="deleteRow(this)"><span class="fa fa-trash-o"></span> Delete</button>';
+
+    // Clear the form inputs
+    document.getElementsByName('class')[0].selectedIndex = 0;
+    document.getElementsByName('division')[0].selectedIndex = 0;
+    document.getElementsByName('subject')[0].selectedIndex = 0;
+}
+
+function deleteRow(button) {
+    // Get the row to be deleted
+    var row = button.parentNode.parentNode;
+
+    // Remove the row from the table
+    row.parentNode.removeChild(row);
+}
+
+
+function addRow() {
+    var classId = document.getElementById("class").value;
+    var className = document.getElementById("class").options[document.getElementById("class").selectedIndex].text;
+    var divisionId = document.getElementById("division").value;
+    var divisionName = document.getElementById("division").options[document.getElementById("division").selectedIndex].text;
+    var subjectId = document.getElementById("subject").value;
+    var subjectName = document.getElementById("subject").options[document.getElementById("subject").selectedIndex].text;
+
+    var table = document.getElementById("dataTables").getElementsByTagName('tbody')[0];
+    for (var i = 0, row; row = table.rows[i]; i++) {
+        if (
+            row.cells[0].innerHTML === className &&
+            row.cells[1].innerHTML === divisionName &&
+            row.cells[2].innerHTML === subjectName
+        ) {
+
+            // alert("This class, division, and subject combination already exists in the table.");
+            noty({ text: 'This combination already exists in the table.', layout: 'topRight',timeout: 2000 ,type:'error' });
+            return;
+        }
+    }
+
+    // If no similar row found, add the new row
+    var newRow = table.insertRow(table.rows.length);
+    var cell1 = newRow.insertCell(0);
+    var cell2 = newRow.insertCell(1);
+    var cell3 = newRow.insertCell(2);
+    var cell4 = newRow.insertCell(3);
+
+    var classIdInput = document.createElement("input");
+    classIdInput.type = "hidden";
+    classIdInput.name = "class_ids[]";  // Use array notation for multiple values
+    classIdInput.value = classId;
+
+    var divisionIdInput = document.createElement("input");
+    divisionIdInput.type = "hidden";
+    divisionIdInput.name = "division_ids[]";
+    divisionIdInput.value = divisionId;
+
+    var subjectIdInput = document.createElement("input");
+    subjectIdInput.type = "hidden";
+    subjectIdInput.name = "subject_ids[]";
+    subjectIdInput.value = subjectId;
+
+
+
+    cell1.innerHTML = className;
+    cell2.innerHTML = divisionName;
+    cell3.innerHTML = subjectName;
+    cell4.innerHTML =  '<button class="btn btn-danger" onclick="deleteRow(this)"><span class="glyphicon glyphicon-trash"></span></button>';
+
+    newRow.appendChild(classIdInput);
+    newRow.appendChild(divisionIdInput);
+    newRow.appendChild(subjectIdInput);
+}
+
+
+function deleteRow(btn) {
+    var row = btn.parentNode.parentNode;
+    row.parentNode.removeChild(row);
+}
+
+// Make an AJAX request to fetch subjects for the selected class
+// $.ajax({
+//     type: 'GET',
+//     url: document.getElementById("url_sub").value,
+//     data: { 'class_id': selectedClass },
+//     dataType: 'json',
+//     success: function(data) {
+//         // Add subjects based on the response
+//         for (var i = 0; i < data.length; i++) {
+//             var option = document.createElement('option');
+//             option.value = data[i].id;
+//             option.text = data[i].subject_name;
+//             subjectsDropdown.appendChild(option);
+//         }
+//     },
+//     error: function(error) {
+//         console.error('Error occurred:', error);
+//     }
+// });
+
+
+
+
+
+
+
+
+
+function updateSubjects() {
+    var classId = document.getElementById("class").value;
+    var subjectDropdown = document.getElementById("subject");
+    console.log(classId);
+    var request_url = document.getElementById('url_sub').value;
+    subjectDropdown.innerHTML = '';
+
+    // Fetch subjects based on the selected class using AJAX
+    $.ajax({
+        url: request_url,
+        type: 'GET',
+        data: { "classId": classId },
+        dataType: 'json',
+        success: function (data) {
+            data.subjects.forEach(function (item) {
+                var option = document.createElement("option");
+                option.value = item.id;
+                option.text = item.subject_name;
+                subjectDropdown.add(option);
+            });
+        },
+        error: function (error) {
+            console.log('Error fetching subjects:', error);
+        }
+    });
 }
