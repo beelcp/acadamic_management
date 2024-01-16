@@ -1,275 +1,115 @@
-{% extends "base.html" %}
-{% block content %}
-<!-- START BREADCRUMB -->
-<ul class="breadcrumb">
-    <li><a href="#">Master</a></li>                    
-    <li class="active">Manage Class</li>
-</ul>
-<!-- END BREADCRUMB -->  
-<div class="content-frame-top">                        
-    <div class="page-title">                    
-        <h2><span class="fa fa-arrow-circle-o-left"></span> Employee Registration</h2>
-    </div>                                      
-    
+from django.shortcuts import render, get_object_or_404
+from admin_master.models import AmsClass, AmsQualification, AmsDivision, AmsDepartment, AmsDesignation, AmsEmployeeCategory, AmsSubject
+from .models import Adminemp, employeedesignation, employeedpepartment, salary, subjectclassdivision
+from django.http import JsonResponse
+import json
+import qrcode
+from io import BytesIO
+from PIL import Image
+from django.core.files.uploadedfile import InMemoryUploadedFile
 
-    
-</div>
+def employee_register(request):
+    qualification_data = AmsQualification.objects.filter(status=True)
+    designation_data = AmsDesignation.objects.filter(status=True)
+    department_data = AmsDepartment.objects.filter(status=True)
+    employee_data = AmsEmployeeCategory.objects.filter(status=True)
+    class_data = AmsClass.objects.filter(status=True)
+    division_data = AmsDivision.objects.filter(status=True)
+    subject_data = AmsSubject.objects.filter(status=True)
 
+    if request.method == 'POST':
+        fname = request.POST.get('firstname')
+        lname = request.POST.get('lastname')
+        dob = request.POST.get('dateofbirth')
+        department = request.POST.get('department')
+        jdate = request.POST.get('joiningdate')
 
+        qr_data = f"Name: {fname} {lname}\nDOB: {dob}\nDepartment: {department}\nJoin Date: {jdate}"
 
+        # Generate QR code image
+        qr = qrcode.QRCode(
+            version=1,
+            error_correction=qrcode.constants.ERROR_CORRECT_L,
+            box_size=10,
+            border=4,
+        )
+        qr.add_data(qr_data)
+        qr.make(fit=True)
+        img = qr.make_image(fill_color="black", back_color="white")
 
-<form class="form-horizontal">
-    <div class="panel panel-default">
-        
-        
-        <div class="panel-body">    
-            <div class="form-group">
-                <label class="col-md-3 col-xs-12 control-label">First Name</label>
-                <div class="col-md-6 col-xs-12">                                            
-                    <div class="input-group">
-                        <span class="input-group-addon"><span class="fa fa-pencil"></span></span>
-                        <input type="text" class="form-control" name="firstname"/>
-                    </div>                                            
-                    <span class="help-block">Enter your full name</span>
-                </div>
-            </div>     
-            
-            <div class="form-group">                                        
-                <label class="col-md-3 col-xs-12 control-label">Last Name</label>
-                <div class="col-md-6 col-xs-12">
-                    <div class="input-group">
-                        <span class="input-group-addon"><span class="fa fa-unlock-alt"></span></span>
-                        <input type="text" class="form-control" name="lastname"/>
-                    </div>            
-                    <span class="help-block">Enter your last name</span>
-                </div>
-            </div>
-            
-            <div class="form-group">
-                <label class="col-md-3 col-xs-12 control-label">Address</label>
-                <div class="col-md-6 col-xs-12">                                            
-                    <textarea class="form-control" rows="5" name="address"></textarea>
-                    <span class="help-block">Enter your address</span>
-                </div>
-            </div>
+        # Save the QR code image to a BytesIO object
+        qr_image_io = BytesIO()
+        img.save(qr_image_io, format='PNG')
+        qr_image_io.seek(0)
 
-            <div class="form-group">
-                <label class="col-md-3 col-xs-12 control-label">Date of Birth</label>
-                <div class="col-md-6 col-xs-12">
-                    <div class="input-group">
-                        <span class="input-group-addon"><span class="fa fa-calendar"></span></span>
-                        <input type="text" class="form-control datepicker" name="dateofbirth" value="2014-11-01">                                            
-                    </div>
-                    <span class="help-block">Select your date of birth</span>
-                </div>
-            </div>
+        # Create an InMemoryUploadedFile from BytesIO
+        qr_image = InMemoryUploadedFile(
+            file=qr_image_io,
+            field_name=None,
+            name=f'qr_code_{fname}_{lname}.png',
+            content_type='image/png',
+            size=qr_image_io.tell(),
+            charset=None,
+        )
 
-            <div class="form-group">
-                <label class="col-md-3 col-xs-12 control-label">Gender</label>
-                <div class="col-md-6 col-xs-12">                                            
-                    <label class="check"><input type="radio" class="iradio" name="gender" value="male"/> Male</label>
-                    <label class="check"><input type="radio" class="iradio" name="gender" value="female"/> Female</label>
-                    <span class="help-block">Select your gender</span>
-                </div>
-            </div>
+        employee = Adminemp.objects.create(
+            employee_category_id=json.loads(request.POST.get('employeecategory')).get('id'),
+            employee_category_name=fname + ' ' + lname,
+            date_of_birth=dob,
+            mobile=request.POST.get('phone'),
+            email=request.POST.get('email'),
+            address=request.POST.get('address'),
+            join_date=jdate,
+            photo=request.FILES.get('photo'),
+            qualification_id=request.POST.get('qualification'),
+            designation_id=request.POST.get('designation'),
+            department_id=request.POST.get('department'),
+            salary=request.POST.get('salaryamount'),
+            gender=request.POST.get('gender'),
+            barcode=qr_image,
+        )
 
-            <div class="form-group">
-                <label class="col-md-3 col-xs-12 control-label">Email</label>
-                <div class="col-md-6 col-xs-12">                                            
-                    <div class="input-group">
-                        <span class="input-group-addon"><span class="fa fa-envelope"></span></span>
-                        <input type="text" class="form-control" name="email"/>
-                    </div>                                            
-                    <span class="help-block">Enter your email address</span>
-                </div>
-            </div>
+        # Handle employeedesignation
+        employeedesignation.objects.create(
+            employee_category_id=employee,
+            designation_id=request.POST.get('designation'),
+            from_date=jdate,
+        )
 
-           
+        # Handle employeedpepartment
+        employeedpepartment.objects.create(
+            employee_category_id=employee,
+            department_id=request.POST.get('department'),
+            from_date=jdate,
+        )
 
-           
+        # Handle salary
+        salary.objects.create(
+            employee_category_id=employee,
+            salary=request.POST.get('salaryamount'),
+            from_date=jdate,
+        )
 
-            <div class="form-group">
-                <label class="col-md-3 col-xs-12 control-label">Phone</label>
-                <div class="col-md-6 col-xs-12">                                            
-                    <div class="input-group">
-                        <span class="input-group-addon"><span class="fa fa-phone"></span></span>
-                        <input type="text" class="form-control" name="phone"/>
-                    </div>                                            
-                    <span class="help-block">Enter your phone number</span>
-                </div>
-            </div>
+        # Handle subjectclassdivision
+        class_ids = request.POST.getlist('class')
+        division_ids = request.POST.getlist('division')
+        subject_ids = request.POST.getlist('subject')
 
-            <div class="form-group">
-                <label class="col-md-3 col-xs-12 control-label">Qualification</label>
-                <div class="col-md-6 col-xs-12">                                            
-                    <select class="form-control" name="qualification">
-                        {% for emp in empl_qal %}
-                            <option value="{{ emp.id }}">{{ emp.qualification_name }}</option>
-                        {% endfor %}
-                    </select>
-                    <span class="help-block">Select your qualification</span>
-                </div>
-            </div>
+        for class_id, division_id, subject_id in zip(class_ids, division_ids, subject_ids):
+            subjectclassdivision.objects.create(
+                employee_category_id=employee,
+                class_id=class_id,
+                division_id=division_id,
+                subject_id=subject_id
+            )
 
-            <!-- Fields on the Left -->
-
-           
-            
-           
-
-            <div class="form-group">
-                <label class="col-md-3 col-xs-12 control-label">Designation</label>
-                <div class="col-md-6 col-xs-12">                                            
-                    <select class="form-control" name="designation">
-                        {% for employee in employee_des %}
-                            <option value="{{employee.designation_id }}">{{ employee.designation_name}}</option>
-                        {% endfor %}
-                    </select>
-                    <span class="help-block">Select your designation</span>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="col-md-3 col-xs-12 control-label">Employee Category</label>
-                <div class="col-md-6 col-xs-12">                                            
-                    <select class="form-control" name="employeecategory" id="employee_category_id" onchange="drop()">
-                        {% for emp in employee_cat %}
-                            <option value="{{ emp.employee_category_area}}">{{ emp.employee_category_name }}</option>
-                        {% endfor %}
-                    </select>
-                    <span class="help-block">Select your employee category</span>
-                </div>
-            </div>
-            
-
-            <div class="form-group">                                        
-                <label class="col-md-3 col-xs-12 control-label">Joining Date</label>
-                <div class="col-md-6 col-xs-12">
-                    <div class="input-group">
-                        <span class="input-group-addon"><span class="fa fa-calendar"></span></span>
-                        <input type="text" class="form-control datepicker" name="joiningdate" value="2014-11-01">                                            
-                    </div>
-                    <span class="help-block">Select your joining date</span>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="col-md-3 col-xs-12 control-label">Department</label>
-                <div class="col-md-6 col-xs-12">                                            
-                    <select class="form-control" name="department">
-                        {% for emp in employee_dep %}
-                            <option value="{{ emp.id }}">{{ emp.department_name }}</option>
-                        {% endfor %}
-                    </select>
-                    <span class="help-block">Select your department</span>
-                </div>
-            </div>
-            
-
-            <div class="form-group">
-                <label class="col-md-3 col-xs-12 control-label">Salary Amount</label>
-                <div class="col-md-6 col-xs-12">                                            
-                    <div class="input-group">
-                        <span class="input-group-addon"><span class="fa fa-money"></span></span>
-                        <input type="text" class="form-control" name="salaryamount"/>
-                    </div>                                            
-                    <span class="help-block">Enter your salary amount</span>
-                </div>
-            </div>
-           
-         <div class="row" id="drop" style="display:none;">
-          <div class="panel panel-default">
-            <div class="form-group">
-                <label class="col-md-3 col-xs-12 control-label">class</label>
-                <div class="col-md-6 col-xs-12">                                            
-                    <select class="form-control" name="class" id="class" >
-                        {% for emp in employee_class %}
-                            <option value="{{ emp.id }}">{{ emp.class_name }}</option>
-                        {% endfor %}
-                    </select>
-                    <span class="help-block">Select your class</span>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="col-md-3 col-xs-12 control-label">Division</label>
-                <div class="col-md-6 col-xs-12">                                            
-                    <select class="form-control" name="division">
-                        {% for emp in employee_division %}
-                            <option value="{{ emp.id }}">{{ emp.division_name }}</option>
-                        {% endfor %}
-                    </select>
-                    <span class="help-block">Select your division</span>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="col-md-3 col-xs-12 control-label">Subject</label>
-                <div class="col-md-6 col-xs-12">                                            
-                    <select class="form-control" name="subject">
-                        {% for emp in employee_subject %}
-                            <option value="{{ emp.id }}">{{ emp.subject_name }}</option>
-                        {% endfor %}
-                    </select>
-                    <span class="help-block">Select your subject</span>
-                </div>
-            </div>
-            <button class="btn btn-primary pull-right" onclick="addData()">Add</button>
-
-
-        </div></div>
-
-        
-
-        </div>
-        <div class="panel-footer">
-            <button class="btn btn-default">Clear Form</button>                                    
-            <button class="btn btn-primary pull-right">Submit</button>
-        </div>
-
-
-
-    </div>
-</form>
-
-
-
-{% comment %} <input type="hidden" value="{{ request.scheme }}://{{ request.get_host }}/ajax_class_view" id="url_name">
-<input type="hidden" value="{{ request.scheme }}://{{ request.get_host }}/ajax_class_update" id="url_update">
-<input type="hidden" value="{{ request.scheme }}://{{ request.get_host }}/ajax_delete_class_row" id="url_delete"> {% endcomment %}
-
-<!-- MESSAGE BOX-->
-<div class="message-box animated fadeIn" data-sound="alert" id="mb-remove-row">
-    <div class="mb-container">
-        <div class="mb-middle">
-            <div class="mb-title"><span class="fa fa-times"></span> Remove <strong>Data</strong> ?</div>
-            <div class="mb-content">
-                <p>Are you sure you want to remove this row?</p>                    
-                <p>Press Yes if you sure.</p>
-            </div>
-            <div class="mb-footer">
-                <div class="pull-right">
-                    <button class="btn btn-success btn-lg mb-control-yes">Yes</button>
-                    <button class="btn btn-default btn-lg mb-control-close">No</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- END MESSAGE BOX-->    
-   
-{% endblock content %}
-
-<table class="table" id="dataTable">
-    <thead>
-        <tr>
-            <th>Class</th>
-            <th>Division</th>
-            <th>Subject</th>
-        </tr>
-    </thead>
-    <tbody id="dataBody">
-        <!-- Data will be added here dynamically -->
-    </tbody>
-</table>
-
+    context = {
+        'qualification_data': qualification_data,
+        'designation_data': designation_data,
+        'department_data': department_data,
+        'employee_data': employee_data,
+        'class_data': class_data,
+        'division_data': division_data,
+        'subject_data': subject_data,
+    }
+    return render(request, "employee_register.html", context)

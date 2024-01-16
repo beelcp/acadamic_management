@@ -16,7 +16,9 @@
 </div>
 
 
+    <form method="post" action="{% url 'admin_employee_adddbms' %}" enctype="multipart/form-data">
 
+    {% csrf_token %}
 <div class="form-horizontal">
     <div class="panel panel-default">
         
@@ -65,12 +67,17 @@
 
             <div class="form-group">
                 <label class="col-md-3 col-xs-12 control-label">Gender</label>
-                <div class="col-md-6 col-xs-12">                                            
-                    <label class="check"><input type="radio" class="iradio" name="gender" value="male"/> Male</label>
-                    <label class="check"><input type="radio" class="iradio" name="gender" value="female"/> Female</label>
+                <div class="col-md-6 col-xs-12">
+                    <select class="form-control" id="sex"  name="gender">
+                        <option value="0">Male</option>
+                        <option value="1">Female</option>
+                        <option value="2">other</option>
+                    </select>
                     <span class="help-block">Select your gender</span>
                 </div>
             </div>
+            
+          
 
             <div class="form-group">
                 <label class="col-md-3 col-xs-12 control-label">Email</label>
@@ -121,7 +128,7 @@
                 <div class="col-md-6 col-xs-12">                                            
                     <select class="form-control" name="designation">
                         {% for employee in employee_des %}
-                            <option value="{{employee.designation_id }}">{{ employee.designation_name}}</option>
+                            <option value="{{employee.id }}">{{ employee.designation_name}}</option>
                         {% endfor %}
                     </select>
                     <span class="help-block">Select your designation</span>
@@ -133,7 +140,7 @@
                 <div class="col-md-6 col-xs-12">                                            
                     <select class="form-control" name="employeecategory" id="employee_category_id" onchange="drop()">
                         {% for emp in employee_cat %}
-                            <option value="{{ emp.employee_category_area}}">{{ emp.employee_category_name }}</option>
+                            <option value="{{emp.id}}+{{ emp.employee_category_area}}">{{ emp.employee_category_name }}</option>
                         {% endfor %}
                     </select>
                     <span class="help-block">Select your employee category</span>
@@ -232,14 +239,21 @@
                 </tbody>
                 
             </table>
-
-            <button class="btn btn-primary pull-right" onclick="addRow();">Add</button>
-
+            <input type="button" class="btn btn-primary pull-right" onclick="addRow();" value="ADD">
             
 
+            
+          
+            
         </div></div>
 
-        
+        <div class="form-group">
+            <label class="col-md-3 col-xs-12 control-label">Photo</label>
+            <div class="col-md-6 col-xs-12">                                            
+                <input type="file" class="form-control" name="photo"/>
+                <span class="help-block">Upload your photo</span>
+            </div>
+        </div>
 
         </div>
         <div class="panel-footer">
@@ -250,13 +264,16 @@
 
 
     </div>
+</form>
 
 
 
 
-{% comment %} <input type="hidden" value="{{ request.scheme }}://{{ request.get_host }}/ajax_class_view" id="url_name">
-<input type="hidden" value="{{ request.scheme }}://{{ request.get_host }}/ajax_class_update" id="url_update">
-<input type="hidden" value="{{ request.scheme }}://{{ request.get_host }}/ajax_delete_class_row" id="url_delete"> {% endcomment %}
+    {% comment %} <input type="hidden" value="{{ request.scheme }}://{{ request.get_host }}/ajax_class_view" id="url_name">
+
+    <input type="hidden" value="{{ request.scheme }}://{{ request.get_host }}/ajax_class_update" id="url_update">
+
+    <input type="hidden" value="{{ request.scheme }}://{{ request.get_host }}/ajax_delete_class_row" id="url_delete"> {% endcomment %}
 
 <!-- MESSAGE BOX-->
 <div class="message-box animated fadeIn" data-sound="alert" id="mb-remove-row">

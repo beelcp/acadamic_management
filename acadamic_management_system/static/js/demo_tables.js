@@ -759,10 +759,11 @@ function checkAll() {
 
 
 function drop() {
-    var employee_category = document.getElementById("employee_category_id");
+    var employee_category = document.getElementById("employee_category_id").value;
     var drop = document.getElementById('drop');
-    
-    if (employee_category.value === '2') {
+    var arr=employee_category.split("+");
+    //alert(arr[0]);
+    if (arr[1]=== '2') {
         drop.style.display = "block";
     } else {
         drop.style.display = "none";
@@ -773,36 +774,7 @@ function drop() {
 
 
 
-function addRowww() {
-    var classInput = document.getElementsByName('class')[0].options[document.getElementsByName('class')[0].selectedIndex].text;
-    var divisionInput = document.getElementsByName('division')[0].options[document.getElementsByName('division')[0].selectedIndex].text;
-    var subjectInput = document.getElementsByName('subject')[0].options[document.getElementsByName('subject')[0].selectedIndex].text;
 
-    var tableBody = document.getElementById('dataBody');
-    var row = tableBody.insertRow();
-    var cell1 = row.insertCell(0);
-    var cell2 = row.insertCell(1);
-    var cell3 = row.insertCell(2);
-    var cell4 = row.insertCell(3);
-
-    cell1.innerHTML = classInput;
-    cell2.innerHTML = divisionInput;
-    cell3.innerHTML = subjectInput;
-    cell4.innerHTML = '<button class="btn btn-danger" onclick="deleteRow(this)"><span class="fa fa-trash-o"></span> Delete</button>';
-
-    // Clear the form inputs
-    document.getElementsByName('class')[0].selectedIndex = 0;
-    document.getElementsByName('division')[0].selectedIndex = 0;
-    document.getElementsByName('subject')[0].selectedIndex = 0;
-}
-
-function deleteRow(button) {
-    // Get the row to be deleted
-    var row = button.parentNode.parentNode;
-
-    // Remove the row from the table
-    row.parentNode.removeChild(row);
-}
 
 
 function addRow() {
