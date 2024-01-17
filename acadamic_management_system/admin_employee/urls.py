@@ -1,5 +1,7 @@
 from . import views
 from django.urls import path
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin_employee_add/',views.admin_employee_add,name="admin_employee_add"),
@@ -10,3 +12,6 @@ urlpatterns = [
     
 ]
 
+
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

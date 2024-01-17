@@ -162,5 +162,8 @@ def admin_employee_adddbms(request):
     return render(request, "admin_employee_add.html", context)
 
 
+
+
 def admin_employee_list(request):
-    return render(request,'admin_employee_list.html')
+    adminemp_list = Adminemp.objects.all()
+    return render(request, 'admin_employee_list.html', {'adminemp_list': adminemp_list})

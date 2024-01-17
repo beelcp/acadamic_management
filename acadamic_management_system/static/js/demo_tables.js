@@ -893,3 +893,10 @@ function updateSubjects() {
         }
     });
 }
+
+
+function showQrCode(imageUrl) {
+  $('#qrCodeImage').attr('src', imageUrl);
+  $('#qrCodeModal').modal('show');
+}
+

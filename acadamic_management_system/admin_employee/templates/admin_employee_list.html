@@ -72,47 +72,66 @@
                         <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Email: activate to sort column ascending" style="width: 150px;">Email</th>
                         <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Mobile: activate to sort column ascending" style="width: 70px;">Mobile</th>
                         <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Department: activate to sort column ascending" style="width: 90px;">Department</th>
+                        <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="QrCode: activate to sort column ascending" style="width: 70px;">Join_date</th>
                         <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="QrCode: activate to sort column ascending" style="width: 70px;">QR_Code</th>
                         <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Photo: activate to sort column ascending" style="width: 90px;">Photo</th>
                         <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Status: activate to sort column ascending" style="width: 70px;">Status</th>
                         <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Action: activate to sort column ascending" style="width: 100px;">Action</th>
                     </tr>
             </thead>
-            <tbody>
                 <tbody>
                     {% for adminemp in adminemp_list %}
-                    <tr id="{{adminemp.id}}" >
+                        <tr id="{{adminemp.id}}" >   
                         <td>{{ forloop.counter }}</td>
-                        <td>{{ adminemp.name }}</td>
+                        <td>{{ adminemp.employee_category_name }}</td>
                         <td>{{ adminemp.email }}</td>
                         <td>{{ adminemp.mobile }}</td>
-                        <td>{{ adminemp.department_id.department_name }}</td>
-                        <td>{{ adminemp.barcode }}</td>
+                        <td>{{ adminemp.department_id.department_name}}</td>
+                        <td>{{ adminemp.join_date }}</td>
+
+                        {% if adminemp.barcode %}
+                        <td>
+                          <img src="{{ adminemp.barcode.url }}" alt="Employee barcode" style="max-width: 80px; max-height: 80px; cursor: pointer;" onclick="showQrCode('{{ adminemp.barcode.url }}')">
+                        </td>
+                      {% endif %}
+                      
+                      
+
+                        {% if adminemp.photo %}
+
                         <td><img src="{{ adminemp.photo.url }}" alt="Employee Photo" style="max-width: 80px; max-height: 80px;"></td>
                        
+                        {% else %}
+                                <td>no date</td>
+                        {% endif %}
 
 
 
                         <td>
-                            {% if ams_department.status %}
+                            {% if adminemp.status %}
                                 <span class="label label-success">Active</span>
                             {% else %}
                                 <span class="label label-danger">Deactive</span>
                             {% endif %}
                         </td>
                         <td>
-                            <button class="btn btn-primary btn-rounded" onClick="edit_row({{ ams_department.id }});" data-toggle="modal" data-target="#modal_basic">
-                                <span id="spinner{{ams_department.id}}" class="fa fa-pencil"></span>
+                            <button class="btn btn-primary btn-rounded" onClick="edit_row({{ adminemp.id }});" data-toggle="modal" data-target="#modal_basic">
+                                <span id="spinner{{adminemp.id}}" class="fa fa-pencil"></span>
                             </button>
-                            {% if not ams_department.status%}
-                            <button class="btn btn-primary btn-rounded" onClick="delete_row1({{ ams_department.id }});">
+                            {% if not adminemp.status%}
+                            <button class="btn btn-primary btn-rounded" onClick="delete_row1({{ adminemp.id }});">
                                 <span class="fa fa-trash-o"></span>
-                            </button>    {% endif %}
+                            </button> 
+                            
+                            {% endif %}
+                            <button class="btn btn-primary btn-rounded" onClick="view_row({{ adminemp.id }});" data-toggle="modal" data-target="#modal_basic">
+                                <span class="fa fa-eye"></span>
+                            </button>  
                         </td>
                     </tr>
                 {% endfor %}
-                    </tbody>
                 </tbody>
+               
         </table>
     </div>
 
@@ -182,6 +201,27 @@
     </div>
 </div>
 <!-- END MESSAGE BOX-->    
+
+<div id="qrCodeModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="qrCodeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title" id="qrCodeModalLabel">QR Code Image</h4>
+        </div>
+        <div class="modal-body">
+          <img id="qrCodeImage" src="" alt="Large QR Code Image" style="width: 50%;">
+        </div>
+      </div>
+    </div>
+  </div>
+  
+
+
+
+  
    
 {% endblock content %}
 
